@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity"
+    tools:context=".MapaActivity"
     android:background="@drawable/home"
     >
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home"
+        android:text="Mapas"
         android:textSize="50sp"
         android:textStyle="bold"
         android:layout_centerInParent="true"
@@ -28,5 +28,4 @@
         app:menu="@menu/menu_navigation"
         />
 
-    
 </RelativeLayout>

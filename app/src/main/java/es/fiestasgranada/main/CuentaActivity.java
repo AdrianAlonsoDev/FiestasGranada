@@ -9,18 +9,18 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class HomeActivity extends AppCompatActivity {
+public class CuentaActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_cuenta);
 
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
 
-        //Set Home Selected
-        bottomNavigationView.setSelectedItemId(R.id.home);
+        //Set Cuenta Selected
+        bottomNavigationView.setSelectedItemId(R.id.cuenta);
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -32,12 +32,12 @@ public class HomeActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.cuenta:
-                        startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.home:
+                    case R.id.cuenta:
                         return true;
                 }
                 return false;
