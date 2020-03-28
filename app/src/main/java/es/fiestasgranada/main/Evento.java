@@ -27,6 +27,7 @@ public class Evento {
     }
 
 
+
     //setters y getters
 
 

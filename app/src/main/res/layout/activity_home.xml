@@ -8,13 +8,16 @@
     android:background="@drawable/home"
     >
 
-    <view
-        android:id="@+id/ListadoEventos"
-        class="androidx.appcompat.app.AlertController$RecycleListView"
+    <FrameLayout
+        android:id="@+id/contenedor"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    </view>
+    </FrameLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"

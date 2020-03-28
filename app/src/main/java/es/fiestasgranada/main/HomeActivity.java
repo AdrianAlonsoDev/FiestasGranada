@@ -19,7 +19,10 @@ public class HomeActivity extends AppCompatActivity {
 
         //inicia el fragment
 
-
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.contenedor, new EventoFragment())
+                .commit();
 
 
         //Initialize and Assign Variable
