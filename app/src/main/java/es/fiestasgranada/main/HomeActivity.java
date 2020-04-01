@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import es.fiestasgranada.main.dummy.DummyContent;
 
 public class HomeActivity extends AppCompatActivity implements fragmentEventosListener{
 
@@ -57,9 +56,14 @@ public class HomeActivity extends AppCompatActivity implements fragmentEventosLi
     }
 
 
-    //metodo de la interfaz para que todo funcione
+    //metodos de la interfaz para que todo funcione
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onListFragmentInteraction(Evento evento) {
+
+    }
+
+    @Override
+    public void onClickEvento(Evento evento) {
 
     }
 }
