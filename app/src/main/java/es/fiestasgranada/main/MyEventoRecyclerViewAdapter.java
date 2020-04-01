@@ -6,21 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import es.fiestasgranada.main.dummy.DummyContent.DummyItem;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link fragmentEventosListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+
+
 public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Evento> mValues;
     private final fragmentEventosListener mListener;
 
-    public MyEventoRecyclerViewAdapter(List<DummyItem> items, fragmentEventosListener listener) {
-        mValues = items;
+    public MyEventoRecyclerViewAdapter(List<Evento> listado, fragmentEventosListener listener) {
+        mValues = listado;
         mListener = listener;
     }
 
@@ -34,8 +30,8 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getId());
+        holder.mTituloView.setText(mValues.get(position).getTitulo());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +39,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onClickEvento(holder.mItem);
                 }
             }
         });
@@ -57,19 +53,19 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mTituloView;
+        public Evento mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mIdView = (TextView) view.findViewById(R.id.evento_id);
+            mTituloView = (TextView) view.findViewById(R.id.titulo);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mTituloView.getText() + "'";
         }
     }
 }

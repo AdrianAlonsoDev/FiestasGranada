@@ -1,11 +1,11 @@
 package es.fiestasgranada.main;
 
-import es.fiestasgranada.main.dummy.DummyContent;
-
 public interface fragmentEventosListener {
 
 
-    void onListFragmentInteraction(DummyContent.DummyItem item);
+    void onListFragmentInteraction(Evento evento);
+
+    public void onClickEvento(Evento evento);
 
 
 }
