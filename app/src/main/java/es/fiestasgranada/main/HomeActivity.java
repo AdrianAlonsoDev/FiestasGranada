@@ -22,7 +22,7 @@ public class HomeActivity extends AppCompatActivity implements fragmentEventosLi
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.contenedor, new EventoFragment().newInstance(2))
+                .add(R.id.contenedor, new EventoFragment()) //Para poner tipo grid, usar EventoFragment().newInstance(2);
                 .commit();
 
 
