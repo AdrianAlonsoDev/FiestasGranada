@@ -6,23 +6,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
-import es.fiestasgranada.main.EventoFragment.OnListFragmentInteractionListener;
 import es.fiestasgranada.main.dummy.DummyContent.DummyItem;
-
 import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
+ * specified {@link fragmentEventosListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final fragmentEventosListener mListener;
 
-    public MyEventoRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyEventoRecyclerViewAdapter(List<DummyItem> items, fragmentEventosListener listener) {
         mValues = items;
         mListener = listener;
     }
