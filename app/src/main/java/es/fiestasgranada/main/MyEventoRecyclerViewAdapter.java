@@ -32,6 +32,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(String.valueOf(mValues.get(position).getId()));
         holder.mTituloView.setText(mValues.get(position).getTitulo());
+        holder.mNombreLocalView.setText(mValues.get(position).getUbicacion().getNombre());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,6 +55,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
         public final View mView;
         public final TextView mIdView;
         public final TextView mTituloView;
+        public final TextView mNombreLocalView;
         public Evento mItem;
 
         public ViewHolder(View view) {
@@ -61,6 +63,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.evento_id);
             mTituloView = (TextView) view.findViewById(R.id.titulo);
+            mNombreLocalView = (TextView) view.findViewById(R.id.nombre_local);
         }
 
         @Override

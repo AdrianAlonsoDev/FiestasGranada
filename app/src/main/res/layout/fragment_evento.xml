@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
     android:background="#5C3C1313">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imagen"
+        android:layout_margin="30dp"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:src="@drawable/ic_local_bar_black_24dp" />
@@ -15,14 +19,22 @@
         android:id="@+id/evento_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="30dp"
         android:textAppearance="?attr/textAppearanceListItem" />
 
     <TextView
-        android:id="@+id/titulo"
+    android:id="@+id/titulo"
+    android:layout_width="62dp"
+    android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+    android:textAppearance="?attr/textAppearanceListItem" />
+
+    <TextView
+        android:id="@+id/nombre_local"
         android:layout_width="62dp"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
+        android:layout_margin="30dp"
         android:textAppearance="?attr/textAppearanceListItem" />
-
 </LinearLayout>
+
+</androidx.cardview.widget.CardView>
