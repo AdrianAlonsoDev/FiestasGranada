@@ -1,40 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#5C3C1313">
+    android:background="#5C3C1313"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="3dp"
+    app:cardCornerRadius="3dp"
+    android:elevation="3dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="5dp">
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/imagen"
-        android:layout_margin="30dp"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_local_bar_black_24dp" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cardView"
+            android:layout_width="fill_parent"
+            android:layout_height="169dp"
+            android:layout_gravity="center_horizontal">
 
-    <TextView
-        android:id="@+id/evento_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:textAppearance="?attr/textAppearanceListItem" />
 
-    <TextView
-    android:id="@+id/titulo"
-    android:layout_width="62dp"
-    android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-    android:textAppearance="?attr/textAppearanceListItem" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imagen"
+                android:layout_width="400dp"
+                android:layout_height="118dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/lavidaesbella"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.407"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.016"
+                />
 
-    <TextView
-        android:id="@+id/nombre_local"
-        android:layout_width="62dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="30dp"
-        android:textAppearance="?attr/textAppearanceListItem" />
+
+            <TextView
+                android:id="@+id/titulo"
+                android:layout_width="176dp"
+                android:layout_height="33dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#333333"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.07"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.937" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
 </LinearLayout>
-
-</androidx.cardview.widget.CardView>
