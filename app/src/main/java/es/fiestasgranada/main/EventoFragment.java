@@ -85,10 +85,10 @@ public class EventoFragment extends Fragment {
         //LA LISTA - creo un local de ejemplo para poder crear los eventos
         Local laVidaEsBella = new Local(1,"La vida es bella", "Pub de tranquis...", true, "C/einstein nº30");
 
-        listado.add(new Evento(0,"primer elemento", "", laVidaEsBella, new Date(2020,5,5)));
-        listado.add(new Evento(1,"segundo elemento", "", laVidaEsBella, new Date(2020,5,5)));
-        listado.add(new Evento(2,"tercer evento", "", laVidaEsBella, new Date(2020,5,5)));
-        listado.add(new Evento(3,"cuarto elemento", "", laVidaEsBella, new Date(2020,5,5)));
+        listado.add(new Evento(0,"La vida es bella", "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 1descripcion larga del local Descripcion larga del local, 1descripcion larga del local Descripcion larga del local, 1", laVidaEsBella, new Date(2020,5,5)));
+        listado.add(new Evento(1,"Mae West", "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 2", laVidaEsBella, new Date(2020,5,5)));
+        listado.add(new Evento(2,"Playmobil", "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 3", laVidaEsBella, new Date(2020,5,5)));
+        listado.add(new Evento(3,"Wall Street", "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 4", laVidaEsBella, new Date(2020,5,5)));
 
 
         recyclerView.setAdapter(new MyEventoRecyclerViewAdapter(listado, mListener));

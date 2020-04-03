@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     public void progressAnimation() {
         ProgressBarAnimation anim = new ProgressBarAnimation(this, progressBar, textView, 0, 100);
-        anim.setDuration(4000);
+        //default 3000, debug 5000
+        anim.setDuration(500);
         progressBar.setAnimation(anim);
     }
 
