@@ -36,7 +36,7 @@
             android:paddingBottom="2dp">
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/imagenEvento"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginTop="4dp"
@@ -59,7 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.134"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView" />
+                app:layout_constraintTop_toBottomOf="@+id/imagenEvento" />
 
             <Button
                 android:id="@+id/arrowBtn"
@@ -71,7 +71,7 @@
                 android:background="@drawable/ic_arrow_drop_down_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView"
+                app:layout_constraintTop_toBottomOf="@+id/imagenEvento"
                 app:layout_constraintVertical_bias="0.113" />
 
             <androidx.constraintlayout.widget.ConstraintLayout

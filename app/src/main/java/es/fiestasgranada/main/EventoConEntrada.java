@@ -10,8 +10,8 @@ public class EventoConEntrada extends Evento{
 
     //constructor
 
-    public EventoConEntrada(int id, String titulo, String descripcion, Local ubicacion, Date fecha, double precioEntrada, String entradaIncluye) {
-        super(id, titulo, descripcion, ubicacion, fecha);
+    public EventoConEntrada(int id, String titulo, String descripcion, Local ubicacion, Date fecha, String URLImagen, double precioEntrada, String entradaIncluye) {
+        super(id, titulo, descripcion, ubicacion, fecha, URLImagen);
         this.precioEntrada = precioEntrada;
         this.entradaIncluye = entradaIncluye;
     }

@@ -10,7 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -42,6 +45,9 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
 
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
+        Picasso.get()
+                .load("http://i.imgur.com/DvpvklR.png")
+                .into(holder.mImagenEvento);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +70,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
         public final View mView;
         public final TextView mTituloView;
         public final TextView mDescripccionView;
+        public final ImageView mImagenEvento;
         public Evento mItem;
 
         ConstraintLayout expandableView;
@@ -77,6 +84,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
 
             mTituloView = (TextView) view.findViewById(R.id.titulo);
             mDescripccionView = (TextView) view.findViewById(R.id.textView);
+            mImagenEvento = (ImageView) view.findViewById(R.id.imagenEvento);
 
             expandableView = view.findViewById(R.id.expandableView);
             arrowBtn = view.findViewById(R.id.arrowBtn);

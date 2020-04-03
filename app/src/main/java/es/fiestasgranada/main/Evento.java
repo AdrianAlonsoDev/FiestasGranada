@@ -13,23 +13,33 @@ public class Evento {
     private String descripcion;
     private Local ubicacion;
     private Date fecha;
+    private String URLImagen;
 
 
 
     //constructores
 
-    public Evento(int id, String titulo, String descripcion, Local ubicacion, Date fecha) {
+    public Evento(int id, String titulo, String descripcion, Local ubicacion, Date fecha, String URLImagen) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.ubicacion = ubicacion;
         this.fecha = fecha;
+        this.URLImagen = URLImagen;
     }
 
 
 
     //setters y getters
 
+
+    public String getURLImagen() {
+        return URLImagen;
+    }
+
+    public void setURLImagen(String URLImagen) {
+        this.URLImagen = URLImagen;
+    }
 
     public String getTitulo() {
         return titulo;
