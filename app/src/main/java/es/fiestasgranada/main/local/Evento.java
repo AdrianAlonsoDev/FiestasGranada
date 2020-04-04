@@ -12,18 +12,20 @@ public class Evento {
     private Date fecha;
     private String URLImagen;
     private boolean activo;
+    private Local local;
 
 
 
     //constructores
 
-    public Evento(int id, String titulo, String descripcion , Date fecha, String URLImagen, boolean abierto) {
+    public Evento(int id, String titulo, String descripcion , Date fecha, String URLImagen, Local local, boolean activo) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.URLImagen = URLImagen;
-        this.activo =  abierto;
+        this.activo =  activo;
+        this.local = local;
     }
 
     public int getId() {
@@ -73,6 +75,16 @@ public class Evento {
     public void setActivo(boolean activo) {
         this.activo = activo;
     }
+
+    public Local getLocal() {
+        return local;
+    }
+
+    public void setLocal(Local local) {
+        this.local = local;
+    }
+
+
 
     @Override
     public String toString() {

@@ -95,7 +95,7 @@ public class LocalFragment extends Fragment {
                     "C/einstein nº30",
                               new Date(2020,5,5),
                    "https://granadaon.com/wp-content/uploads/2017/05/playmobilclub-granada-3.jpg",
-                       false));
+                       true));
 
         //----------------------------------------------------------------------------------------------------------------------------
 

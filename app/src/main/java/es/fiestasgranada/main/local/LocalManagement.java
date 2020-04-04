@@ -45,11 +45,22 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
 
         holder.mItem = mValues.get(position);
+
+        //Pone el título y la descripción.
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
-        Picasso.get().load(mValues.get(position).getURLImagen()).into(holder.mImagenEvento);
-        if(mValues.get(position).isAbierto() == true) {
 
+        //Carga las imágenes mediante URL
+        Picasso.get().load(mValues.get(position).getURLImagen()).into(holder.mImagenEvento);
+
+        //Comprueba si el local está abierto llamando a la boolean, si es así ocultará el
+        // botón de cerrado y mostrará el de abierto y viceversa.
+        if(mValues.get(position).isAbierto() == true) {
+            holder.noDisponibilidadEvento.setVisibility(View.GONE);
+            holder.disponibilidadEvento.setVisibility(View.VISIBLE);
+        } else {
+           holder. noDisponibilidadEvento.setVisibility(View.VISIBLE);
+            holder.disponibilidadEvento.setVisibility(View.GONE);
         }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
@@ -87,19 +98,24 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         public ViewHolder(View view) {
             super(view);
             mView = view;
+
             mTituloView = (TextView) view.findViewById(R.id.tituloLocal);
+
             mDescripccionView = (TextView) view.findViewById(R.id.descOculta);
+
             mImagenEvento = (ImageView) view.findViewById(R.id.imagenLocal);
+
             disponibilidadEvento = (TextView) view.findViewById(R.id.disponibilidadLocal);
+
             noDisponibilidadEvento = (TextView) view.findViewById(R.id.noDisponibilidadLocal);
 
-
             expandableView = view.findViewById(R.id.descripcionLocal);
-            botonOfertas = view.findViewById(R.id.botonOfertas);
+
             cardView = view.findViewById(R.id.cardView);
+
             listenerEventoView = (CardView) view.findViewById(R.id.cardView);
 
-
+            botonOfertas = view.findViewById(R.id.botonOfertas);
 
             botonOfertas.setOnClickListener(new View.OnClickListener() {
                 @Override
