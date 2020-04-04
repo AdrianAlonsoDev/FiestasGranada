@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#00E4E3E3"
-    tools:context=".MyEventoRecyclerViewAdapter"
+    tools:context=".EventoRecyclerViewAdapter"
     android:animateLayoutChanges="true"
     android:layout_marginBottom="10dp"
     >

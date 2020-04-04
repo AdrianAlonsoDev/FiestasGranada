@@ -14,21 +14,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.RequestCreator;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
+import es.fiestasgranada.listeners.EventosListener;
 
 
-public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRecyclerViewAdapter.ViewHolder> {
+public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecyclerViewAdapter.ViewHolder> {
 
     private final List<Evento> mValues;
-    private final fragmentEventosListener mListener;
+    private final EventosListener mListener;
 
 
-    public MyEventoRecyclerViewAdapter(List<Evento> listado, fragmentEventosListener listener) {
+    public EventoRecyclerViewAdapter(List<Evento> listado, EventosListener listener) {
         mValues = listado;
         mListener = listener;
     }

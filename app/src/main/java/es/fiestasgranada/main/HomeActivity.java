@@ -8,8 +8,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import es.fiestasgranada.listeners.EventosListener;
 
-public class HomeActivity extends AppCompatActivity implements fragmentEventosListener{
+
+public class HomeActivity extends AppCompatActivity implements EventosListener {
 
 
     @Override

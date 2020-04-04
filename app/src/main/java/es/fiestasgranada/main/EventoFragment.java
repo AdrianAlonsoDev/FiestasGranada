@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.fiestasgranada.listeners.EventosListener;
+
 
 /**
  * A fragment representing a list of Items.
  * <p/>
- * Activities containing this fragment MUST implement the {@link fragmentEventosListener}
+ * Activities containing this fragment MUST implement the {@link EventosListener}
  * interface.
  */
 public class EventoFragment extends Fragment {
@@ -27,7 +29,7 @@ public class EventoFragment extends Fragment {
     private static final String ARG_COLUMN_COUNT = "column-count";
 
     private int mColumnCount = 1;
-    private fragmentEventosListener mListener;
+    private EventosListener mListener;
     private List<Evento> listado = new ArrayList<>();
 
     /**
@@ -76,7 +78,7 @@ public class EventoFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new MyEventoRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new EventoRecyclerViewAdapter(DummyContent.ITEMS, mListener));
         }*/
         //----------------------------------------------------------------------------------------------------------------------------
 
@@ -91,7 +93,7 @@ public class EventoFragment extends Fragment {
         listado.add(new Evento(3,"Wall Street", "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 4", laVidaEsBella, new Date(2020,5,5), "https://s3-media0.fl.yelpcdn.com/bphoto/Ye1zdQAZI_zELyQZw5ehfw/o.jpg"));
 
 
-        recyclerView.setAdapter(new MyEventoRecyclerViewAdapter(listado, mListener));
+        recyclerView.setAdapter(new EventoRecyclerViewAdapter(listado, mListener));
         return view;
 
 
@@ -101,8 +103,8 @@ public class EventoFragment extends Fragment {
     @Override
     public void onAttach(Context context) {//en el contexto recibe el activity home
         super.onAttach(context);
-        if (context instanceof fragmentEventosListener) {
-            mListener = (fragmentEventosListener) context;
+        if (context instanceof EventosListener) {
+            mListener = (EventosListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
