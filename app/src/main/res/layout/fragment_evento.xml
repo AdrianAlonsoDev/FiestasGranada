@@ -42,7 +42,6 @@
                 android:layout_marginTop="4dp"
                 android:padding="4dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/lavidaesbella"
                 app:layout_constraintDimensionRatio="H,16:9"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"

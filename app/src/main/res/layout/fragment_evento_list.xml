@@ -12,5 +12,4 @@
     app:layoutManager="LinearLayoutManager"
     android:background="#00FFFFFF"
     tools:context=".EventoFragment"
-    tools:listitem="@layout/fragment_evento"
-    android:layout_marginEnd="30dp"/>
+    tools:listitem="@layout/fragment_evento"/>

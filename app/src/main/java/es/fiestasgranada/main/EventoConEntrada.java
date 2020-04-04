@@ -28,12 +28,11 @@ public class EventoConEntrada extends Evento{
         this.precioEntrada = precioEntrada;
     }
 
-    public String getEntradaIncluye() {
-        return entradaIncluye;
+    @Override
+    public String toString() {
+        return "EventoConEntrada{" +
+                "precioEntrada=" + precioEntrada +
+                ", entradaIncluye='" + entradaIncluye + '\'' +
+                '}';
     }
-
-    public void setEntradaIncluye(String entradaIncluye) {
-        this.entradaIncluye = entradaIncluye;
-    }
-
 }

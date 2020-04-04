@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.RequestCreator;
 
 import org.w3c.dom.Text;
 
@@ -36,18 +37,19 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_evento, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
 
+
+        holder.mItem = mValues.get(position);
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
-        Picasso.get()
-                .load("http://i.imgur.com/DvpvklR.png")
-                .into(holder.mImagenEvento);
+        Picasso.get().load(mValues.get(position).getURLImagen()).into(holder.mImagenEvento);
+
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +82,7 @@ public class MyEventoRecyclerViewAdapter extends RecyclerView.Adapter<MyEventoRe
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
+             mView = view;
 
             mTituloView = (TextView) view.findViewById(R.id.titulo);
             mDescripccionView = (TextView) view.findViewById(R.id.textView);
