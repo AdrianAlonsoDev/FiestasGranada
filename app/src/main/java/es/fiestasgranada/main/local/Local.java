@@ -1,8 +1,8 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.local;
 
 import java.util.Date;
 
-public class Evento {
+public class Local {
 
 
 
@@ -11,27 +11,26 @@ public class Evento {
     private int id;
     private String titulo;
     private String descripcion;
-    private Local ubicacion;
+    private String ubicacion;
     private Date fecha;
     private String URLImagen;
+    private boolean abierto;
 
 
 
     //constructores
 
-    public Evento(int id, String titulo, String descripcion, Local ubicacion, Date fecha, String URLImagen) {
+    public Local(int id, String titulo, String descripcion, String ubicacion, Date fecha, String URLImagen, boolean abierto) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.ubicacion = ubicacion;
         this.fecha = fecha;
         this.URLImagen = URLImagen;
+        this.abierto =  abierto;
+        this.ubicacion = ubicacion;
     }
 
-
-
     //setters y getters
-
 
     public String getURLImagen() {
         return URLImagen;
@@ -49,11 +48,19 @@ public class Evento {
         this.titulo = titulo;
     }
 
-    public Local getUbicacion() {
+    public boolean isAbierto() {
+        return abierto;
+    }
+
+    public void setAbierto(boolean abierto) {
+        this.abierto = abierto;
+    }
+
+    public String getUbicacion() {
         return ubicacion;
     }
 
-    public void setUbicacion(Local ubicacion) {
+    public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
     }
 
@@ -78,5 +85,18 @@ public class Evento {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Local{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", descripcion='" + descripcion + '\'' +
+                ", ubicacion=" + ubicacion +
+                ", fecha=" + fecha +
+                ", URLImagen='" + URLImagen + '\'' +
+                ", abierto=" + abierto +
+                '}';
     }
 }

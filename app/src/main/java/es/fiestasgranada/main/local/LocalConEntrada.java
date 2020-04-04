@@ -1,8 +1,8 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.local;
 
 import java.util.Date;
 
-public class EventoConEntrada extends Evento{
+public class LocalConEntrada extends Local {
 
     //-----------------ATRIBUTOS NUEVOS---------------
     private double precioEntrada;
@@ -10,8 +10,8 @@ public class EventoConEntrada extends Evento{
 
     //constructor
 
-    public EventoConEntrada(int id, String titulo, String descripcion, Local ubicacion, Date fecha, String URLImagen, double precioEntrada, String entradaIncluye) {
-        super(id, titulo, descripcion, ubicacion, fecha, URLImagen);
+    public LocalConEntrada(int id, String titulo, String descripcion, String ubicacion, Date fecha, String URLImagen, double precioEntrada, String entradaIncluye, boolean abierto) {
+        super(id, titulo, descripcion, ubicacion, fecha, URLImagen, abierto);
         this.precioEntrada = precioEntrada;
         this.entradaIncluye = entradaIncluye;
     }
@@ -30,7 +30,7 @@ public class EventoConEntrada extends Evento{
 
     @Override
     public String toString() {
-        return "EventoConEntrada{" +
+        return "LocalConEntrada{" +
                 "precioEntrada=" + precioEntrada +
                 ", entradaIncluye='" + entradaIncluye + '\'' +
                 '}';

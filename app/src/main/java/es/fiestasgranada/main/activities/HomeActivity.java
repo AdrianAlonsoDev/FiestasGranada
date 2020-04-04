@@ -1,4 +1,4 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -6,21 +6,35 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class CuentaActivity extends AppCompatActivity {
+import es.fiestasgranada.main.listeners.LocalListener;
+import es.fiestasgranada.main.local.LocalFragment;
+import es.fiestasgranada.main.local.Local;
+import es.fiestasgranada.main.R;
+
+
+public class HomeActivity extends AppCompatActivity implements LocalListener {
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cuenta);
+        setContentView(R.layout.activity_home);
+
+        //inicia el fragment
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.contenedor, new LocalFragment()) //Para poner tipo grid, usar LocalFragment().newInstance(2);
+                .commit();
+
 
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
 
-        //Set Cuenta Selected
-        bottomNavigationView.setSelectedItemId(R.id.cuenta);
+        //Set Home Selected
+        bottomNavigationView.setSelectedItemId(R.id.home);
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -32,16 +46,29 @@ public class CuentaActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    case R.id.cuenta:
+                        startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.cuenta:
+                    case R.id.home:
                         return true;
                 }
                 return false;
             }
         });
+
+    }
+
+
+    //metodos de la interfaz para que todo funcione
+    @Override
+    public void onListFragmentInteraction(Local evento) {
+
+    }
+
+    @Override
+    public void onClickLocal(Local evento) {
+
     }
 }

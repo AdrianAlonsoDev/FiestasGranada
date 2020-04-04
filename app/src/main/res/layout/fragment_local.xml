@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#00E4E3E3"
+    tools:context=".local.LocalManagement"
+    android:animateLayoutChanges="true"
+    android:layout_marginBottom="10dp"
+    >
+
+    <!--
+    CardView principal
+    -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:elevation="2dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="#202020"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardCornerRadius="3dp"
+        >
+        <!--
+        Trabajamos dentro de un Constraint Layout
+            - Titulo
+            - Imagen
+            - Botón de ofertas
+         -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/localConstraint"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="2dp"
+            android:elevation="4dp">
+
+            <TextView
+                android:id="@+id/tituloLocal"
+                android:layout_width="164dp"
+                android:layout_height="33dp"
+                android:layout_marginTop="8dp"
+                android:textColor="#fff"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.069"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imagenLocal" />
+
+
+            <Button
+                android:id="@+id/botonOfertas"
+                android:layout_width="46dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginRight="32dp"
+                android:background="@drawable/oferta"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/imagenLocal"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageView
+                android:id="@+id/imagenLocal"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="4dp"
+                android:elevation="2dp"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--
+             Trabajamos dentro de otro Constraint Layout
+               - Info evento
+               - Abierto
+               - Ubicacion
+            -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/infoLocal"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:background="#A30B0B0B"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:elevation="100dp"
+                app:layout_constraintBottom_toBottomOf="@+id/imagenLocal"
+                app:layout_constraintEnd_toEndOf="@+id/imagenLocal"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/imagenLocal"
+                app:layout_constraintTop_toBottomOf="@+id/tituloLocal"
+                app:layout_constraintVertical_bias="1.0">
+
+                <TextView
+                    android:id="@+id/disponibilidadLocal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/botonabierto"
+                    android:elevation="100dp"
+                    android:text="Abierto"
+                    android:visibility="gone"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.951"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/noDisponibilidadLocal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/botoncerrado"
+                    android:elevation="100dp"
+                    android:text="Cerrado"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.951"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.545" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <!--
+             Trabajamos dentro de otro un Constraint Layout
+                - Descripcion desplegable
+             -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/descripcionLocal"
+                android:layout_width="328dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="268dp"
+                android:visibility="gone"
+                android:paddingBottom="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.492"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/descOculta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#C1C1C1"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.304"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,27 +9,28 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MapaActivity extends AppCompatActivity {
+import es.fiestasgranada.main.R;
+
+public class CuentaActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_mapa);
+        setContentView(R.layout.activity_cuenta);
 
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
 
-        //Set Mapa Selected
-        bottomNavigationView.setSelectedItemId(R.id.mapa);
+        //Set Cuenta Selected
+        bottomNavigationView.setSelectedItemId(R.id.cuenta);
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch(menuItem.getItemId()) {
-
-                    case R.id.cuenta:
-                        startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
+                    case R.id.mapa:
+                        startActivity(new Intent(getApplicationContext(), MapaActivity.class));
                         overridePendingTransition(0,0);
                         return true;
 
@@ -38,7 +39,7 @@ public class MapaActivity extends AppCompatActivity {
                         overridePendingTransition(0,0);
                         return true;
 
-                    case R.id.mapa:
+                    case R.id.cuenta:
                         return true;
                 }
                 return false;

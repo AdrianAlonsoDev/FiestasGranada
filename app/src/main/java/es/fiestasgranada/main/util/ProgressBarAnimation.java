@@ -1,4 +1,4 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,8 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import es.fiestasgranada.main.activities.HomeActivity;
 
 public class ProgressBarAnimation extends Animation {
 

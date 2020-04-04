@@ -1,4 +1,4 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.local;
 
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,16 +17,17 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import es.fiestasgranada.listeners.EventosListener;
+import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.listeners.LocalListener;
 
 
-public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecyclerViewAdapter.ViewHolder> {
+public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHolder> {
 
-    private final List<Evento> mValues;
-    private final EventosListener mListener;
+    private final List<Local> mValues;
+    private final LocalListener mListener;
 
 
-    public EventoRecyclerViewAdapter(List<Evento> listado, EventosListener listener) {
+    public LocalManagement(List<Local> listado, LocalListener listener) {
         mValues = listado;
         mListener = listener;
     }
@@ -34,7 +35,7 @@ public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecycl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_evento, parent, false);
+                .inflate(R.layout.fragment_local, parent, false);
 
         return new ViewHolder(view);
     }
@@ -47,7 +48,9 @@ public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecycl
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
         Picasso.get().load(mValues.get(position).getURLImagen()).into(holder.mImagenEvento);
+        if(mValues.get(position).isAbierto() == true) {
 
+        }
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -55,7 +58,7 @@ public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecycl
                 if (null != mListener) {
                     // Notify the active callbacks interface (the activity, if the
                     // fragment is attached to one) that an item has been selected.
-                    mListener.onClickEvento(holder.mItem);
+                    mListener.onClickLocal(holder.mItem);
                 }
             }
         });
@@ -70,40 +73,65 @@ public class EventoRecyclerViewAdapter extends RecyclerView.Adapter<EventoRecycl
         public final View mView;
         public final TextView mTituloView;
         public final TextView mDescripccionView;
+        public final TextView disponibilidadEvento;
+        public final TextView noDisponibilidadEvento;
         public final ImageView mImagenEvento;
-        public Evento mItem;
+        public final CardView listenerEventoView;
+        public Local mItem;
 
         ConstraintLayout expandableView;
-        Button arrowBtn;
+        Button botonOfertas;
         CardView cardView;
 
 
         public ViewHolder(View view) {
             super(view);
-             mView = view;
+            mView = view;
+            mTituloView = (TextView) view.findViewById(R.id.tituloLocal);
+            mDescripccionView = (TextView) view.findViewById(R.id.descOculta);
+            mImagenEvento = (ImageView) view.findViewById(R.id.imagenLocal);
+            disponibilidadEvento = (TextView) view.findViewById(R.id.disponibilidadLocal);
+            noDisponibilidadEvento = (TextView) view.findViewById(R.id.noDisponibilidadLocal);
 
-            mTituloView = (TextView) view.findViewById(R.id.titulo);
-            mDescripccionView = (TextView) view.findViewById(R.id.textView);
-            mImagenEvento = (ImageView) view.findViewById(R.id.imagenEvento);
 
-            expandableView = view.findViewById(R.id.expandableView);
-            arrowBtn = view.findViewById(R.id.arrowBtn);
+            expandableView = view.findViewById(R.id.descripcionLocal);
+            botonOfertas = view.findViewById(R.id.botonOfertas);
             cardView = view.findViewById(R.id.cardView);
+            listenerEventoView = (CardView) view.findViewById(R.id.cardView);
 
-            arrowBtn.setOnClickListener(new View.OnClickListener() {
+
+
+            botonOfertas.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (expandableView.getVisibility()==View.GONE){
                         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                         expandableView.setVisibility(View.VISIBLE);
-                        arrowBtn.setBackgroundResource(R.drawable.ic_arrow_drop_down_black_24dp);
+                        botonOfertas.setBackgroundResource(R.drawable.oferta);
                     } else {
                         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                         expandableView.setVisibility(View.GONE);
-                        arrowBtn.setBackgroundResource(R.drawable.ic_arrow_drop_down_black_24dp);
+                        botonOfertas.setBackgroundResource(R.drawable.oferta);
                     }
                 }
             });
+
+            listenerEventoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (expandableView.getVisibility()==View.GONE){
+                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
+                        expandableView.setVisibility(View.VISIBLE);
+                        botonOfertas.setBackgroundResource(R.drawable.oferta);
+                    } else {
+                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
+                        expandableView.setVisibility(View.GONE);
+                        botonOfertas.setBackgroundResource(R.drawable.oferta);
+                    }
+                }
+            });
+
+
         }
 
         @Override

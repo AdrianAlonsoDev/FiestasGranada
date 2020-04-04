@@ -1,4 +1,4 @@
-package es.fiestasgranada.main;
+package es.fiestasgranada.main.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import es.fiestasgranada.main.util.ProgressBarAnimation;
+import es.fiestasgranada.main.R;
 
 public class MainActivity extends AppCompatActivity {
 
