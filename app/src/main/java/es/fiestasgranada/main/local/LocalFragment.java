@@ -44,6 +44,7 @@ public class LocalFragment extends Fragment {
     private LocalListener mListener;
     static private List<Local> listado = new ArrayList<>();
     private static Context context = null;
+    private static String URL_API = "http://192.168.1.10/FiestasGranada/api.php";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -78,76 +79,12 @@ public class LocalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_local_list, container, false);
 
         // Set the adapter
-       // Context context = view.getContext();
-        context=getActivity();
+        // Context context = view.getContext();
+        context = getActivity();
         RecyclerView recyclerView = (RecyclerView) view;
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        /*listado.add(new Local(0,
-                "La vida es bella",
-                "Descripcion larga del local, descripcion larga del local Descripcion larga del local 1",
-                "C/einstein nº30",
-                "15/05/2020",
-                "https://festgra.com/wp-content/uploads/2019/10/la-vida-es-vella-galeria.jpg",
-                true));
 
-        //----------------------------------------------------------------------------------------------------------------------------
-
-        listado.add(new Local(1,
-                "Mae West",
-                "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 2",
-                "C/einstein nº30",
-                "15/05/2020",
-                "https://www.conciertosengranada.es/doc/l/l_MaeWest.jpg",
-                false));
-
-        //----------------------------------------------------------------------------------------------------------------------------
-
-        listado.add(new Local(2,
-                "Playmobil",
-                "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 3",
-                "C/einstein nº30",
-                "15/05/2020",
-                "https://granadaon.com/wp-content/uploads/2017/05/playmobilclub-granada-3.jpg",
-                true));
-
-        //----------------------------------------------------------------------------------------------------------------------------
-
-        listado.add(new Local(3,
-                "Wall Street",
-                "Descripcion larga del local, descripcion larga del local Descripcion larga del local, 4",
-                "C/einstein nº30",
-                "15/05/2020",
-                "https://s3-media0.fl.yelpcdn.com/bphoto/Ye1zdQAZI_zELyQZw5ehfw/o.jpg",
-                false));*/
-        //Elimina la restriccion de que solo se pueda usar en un AsyncTask, para pruebas.
-        //StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        //StrictMode.setThreadPolicy(policy);
-/*
-                    try {
-                        URL url = new URL("http://192.168.1.10/FiestasGranada/api.php");
-                        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                        StringBuilder sb = new StringBuilder();
-                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                        String json;
-                        while ((json = bufferedReader.readLine()) != null) {
-                            sb.append(json + "\n");
-                            JSONArray jsonArray = new JSONArray(json);
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject obj = jsonArray.getJSONObject(i);
-                                listado.add(new Local(obj.getInt("id"),
-                                        obj.getString("titulo"),
-                                        obj.getString("descripcion"),
-                                        obj.getString("ubicacion"),
-                                        obj.getString("fecha"),
-                                        obj.getString("URLImagen"),
-                                        obj.getString("abierto")));
-                            }
-                        }
-                    } catch (Exception e) {
-                        Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-                        return null;
-                    }*/
         listado.clear();
         new DownloadJSON().execute();
         try {
@@ -158,11 +95,9 @@ public class LocalFragment extends Fragment {
         recyclerView.setAdapter(new LocalManagement(listado, mListener));
         return view;
 
-
     }
 
-
-        static class DownloadJSON extends AsyncTask<Void, Void, String> {
+    static class DownloadJSON extends AsyncTask<Void, Void, String> {
 
         @Override
         protected void onPreExecute() {
@@ -179,7 +114,7 @@ public class LocalFragment extends Fragment {
         protected String doInBackground(Void... voids) {
             try {
 
-                URL url = new URL("http://192.168.1.10/FiestasGranada/api.php");
+                URL url = new URL(URL_API);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 StringBuilder sb = new StringBuilder();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
@@ -190,23 +125,23 @@ public class LocalFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
 
-                            listado.add(new Local(obj.getInt("id"),
-                                    obj.getString("titulo"),
-                                    obj.getString("descripcion"),
-                                    obj.getString("ubicacion"),
-                                    obj.getString("fecha"),
-                                    obj.getString("URLImagen"),
-                                    obj.getString("abierto")));
+                        listado.add(new Local(obj.getInt("id"),
+                                obj.getString("titulo"),
+                                obj.getString("descripcion"),
+                                obj.getString("ubicacion"),
+                                obj.getString("fecha"),
+                                obj.getString("URLImagen"),
+                                obj.getString("abierto")));
 
                     }
                 }
             } catch (Exception e) {
 
                 Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
-            }return null;
+            }
+            return null;
         }
     }
-
 
 
     @Override
@@ -225,20 +160,4 @@ public class LocalFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-
 }
-
-//----------------------------------------------------------------------------------------------------------------------------
-//si quisieramos hacerlo en GRID podriamos usar este código, para que no moleste lo he apartado para verlo mas sencillo
-        /*if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new LocalManagement(DummyContent.ITEMS, mListener));
-        }*/
-//----------------------------------------------------------------------------------------------------------------------------
