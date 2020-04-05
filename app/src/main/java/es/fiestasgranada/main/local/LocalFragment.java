@@ -88,8 +88,9 @@ public class LocalFragment extends Fragment {
         listado.clear();
         new DownloadJSON().execute();
         try {
-            Thread.sleep(200);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         recyclerView.setAdapter(new LocalManagement(listado, mListener));
         return view;
