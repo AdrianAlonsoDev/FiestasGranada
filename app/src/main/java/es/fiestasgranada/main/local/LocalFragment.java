@@ -44,7 +44,7 @@ public class LocalFragment extends Fragment {
     private LocalListener mListener;
     static private List<Local> listado = new ArrayList<>();
     private static Context context = null;
-    private static String URL_API = "http://192.168.1.10/FiestasGranada/api.php";
+    private static String URL_API = "https://fiestasgranada.synology.me/api.php";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -88,9 +88,8 @@ public class LocalFragment extends Fragment {
         listado.clear();
         new DownloadJSON().execute();
         try {
-            Thread.sleep(100);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
         recyclerView.setAdapter(new LocalManagement(listado, mListener));
         return view;
