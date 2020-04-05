@@ -55,7 +55,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
         //Comprueba si el local está abierto llamando a la boolean, si es así ocultará el
         // botón de cerrado y mostrará el de abierto y viceversa.
-        if(mValues.get(position).isAbierto() == true) {
+        if(mValues.get(position).isAbierto().equals("si")) {
             holder.noDisponibilidadEvento.setVisibility(View.GONE);
             holder.disponibilidadEvento.setVisibility(View.VISIBLE);
         } else {
@@ -81,6 +81,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
         public final View mView;
         public final TextView mTituloView;
         public final TextView mDescripccionView;

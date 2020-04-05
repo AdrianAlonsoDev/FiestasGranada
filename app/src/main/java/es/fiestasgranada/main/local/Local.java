@@ -1,7 +1,5 @@
 package es.fiestasgranada.main.local;
 
-import java.util.Date;
-
 public class Local {
 
 
@@ -12,15 +10,15 @@ public class Local {
     private String titulo;
     private String descripcion;
     private String ubicacion;
-    private Date fecha;
+    private String fecha;
     private String URLImagen;
-    private boolean abierto;
+    private String abierto;
 
 
 
     //constructores
 
-    public Local(int id, String titulo, String descripcion, String ubicacion, Date fecha, String URLImagen, boolean abierto) {
+    public Local(int id, String titulo, String descripcion, String ubicacion, String fecha, String URLImagen, String abierto) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -48,11 +46,11 @@ public class Local {
         this.titulo = titulo;
     }
 
-    public boolean isAbierto() {
+    public String isAbierto() {
         return abierto;
     }
 
-    public void setAbierto(boolean abierto) {
+    public void setAbierto(String abierto) {
         this.abierto = abierto;
     }
 
@@ -64,11 +62,11 @@ public class Local {
         this.ubicacion = ubicacion;
     }
 
-    public Date getFecha() {
+    public String getFecha() {
         return fecha;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(String fecha) {
         this.fecha = fecha;
     }
 
