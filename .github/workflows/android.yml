@@ -2,9 +2,9 @@ name: Android CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ circleci-project-setup ]
   pull_request:
-    branches: [ master ]
+    branches: [ circleci-project-setup ]
 
 jobs:
   build:
