@@ -1,4 +1,4 @@
 # FiestasGranada
 Repositorio para la aplicación movil FiestasGranada
 
-[![CircleCI](https://circleci.com/gh/AdrianArtimez/FiestasGranada.svg?style=shield&circle-token=612255e26f0e7bcb3aa2884970822003979490d7)](https://app.circleci.com/pipelines/github/AdrianArtimez/FiestasGranada/6/workflows/015faed5-cc4c-4050-9ef3-3d189cbd0168)
+[![CircleCI](https://circleci.com/gh/AdrianArtimez/FiestasGranada.svg?style=shield&circle-token=c4addf0b000df92e4673daed8203d198db94a0d3)](https://app.circleci.com/pipelines/github/AdrianArtimez/FiestasGranada/11/workflows/10867527-287f-4cbc-b4a9-04013a970457/jobs/15)
