@@ -34,12 +34,10 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
-import es.fiestasgranada.main.listeners.Puntos;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -86,7 +84,6 @@ public class MapaActivity extends AppCompatActivity
      */
 
     private static final LatLng MELBOURNE = new LatLng(37.177, -3.609);
-    ArrayList<Puntos> listaPuntos = new ArrayList<>();
 
     /**
      * Saves the state of the map when the activity is paused.
