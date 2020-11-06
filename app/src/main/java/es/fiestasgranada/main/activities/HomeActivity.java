@@ -1,17 +1,18 @@
 package es.fiestasgranada.main.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import es.fiestasgranada.main.listeners.LocalListener;
-import es.fiestasgranada.main.local.LocalFragment;
-import es.fiestasgranada.main.local.Local;
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.listeners.LocalListener;
+import es.fiestasgranada.main.local.Local;
+import es.fiestasgranada.main.local.LocalFragment;
 
 
 public class HomeActivity extends AppCompatActivity implements LocalListener {
@@ -40,15 +41,15 @@ public class HomeActivity extends AppCompatActivity implements LocalListener {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch(menuItem.getItemId()) {
+                switch (menuItem.getItemId()) {
                     case R.id.mapa:
                         startActivity(new Intent(getApplicationContext(), MapaActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.cuenta:
                         startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
-                        overridePendingTransition(0,0);
+                        overridePendingTransition(0, 0);
                         return true;
 
                     case R.id.home:

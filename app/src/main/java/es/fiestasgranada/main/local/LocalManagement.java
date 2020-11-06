@@ -56,11 +56,11 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
         //Comprueba si el local está abierto llamando a la boolean, si es así ocultará el
         // botón de cerrado y mostrará el de abierto y viceversa.
-        if(mValues.get(position).isAbierto().equals("si")) {
+        if (mValues.get(position).isAbierto().equals("si")) {
             holder.noDisponibilidadEvento.setVisibility(View.GONE);
             holder.disponibilidadEvento.setVisibility(View.VISIBLE);
         } else {
-           holder. noDisponibilidadEvento.setVisibility(View.VISIBLE);
+            holder.noDisponibilidadEvento.setVisibility(View.VISIBLE);
             holder.disponibilidadEvento.setVisibility(View.GONE);
         }
 
@@ -122,7 +122,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             botonOfertas.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (expandableView.getVisibility()==View.GONE){
+                    if (expandableView.getVisibility() == View.GONE) {
                         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                         expandableView.setVisibility(View.VISIBLE);
                         botonOfertas.setBackgroundResource(R.drawable.oferta);
@@ -137,7 +137,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             listenerEventoView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (expandableView.getVisibility()==View.GONE){
+                    if (expandableView.getVisibility() == View.GONE) {
                         TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
                         expandableView.setVisibility(View.VISIBLE);
                         botonOfertas.setBackgroundResource(R.drawable.oferta);

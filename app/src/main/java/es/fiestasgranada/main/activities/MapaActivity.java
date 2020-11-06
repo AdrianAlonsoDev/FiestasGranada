@@ -3,8 +3,10 @@ package es.fiestasgranada.main.activities;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,12 +16,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -79,6 +85,7 @@ public class MapaActivity extends AppCompatActivity
     private List[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
+
     /**
      * Manipulates the map when it's available.
      * This callback is triggered when the map is ready to be used.
@@ -125,12 +132,17 @@ public class MapaActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_mapa);
+
         //Initialize and Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
 
         //Set Mapa Selected
         bottomNavigationView.setSelectedItemId(R.id.mapa);
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -176,22 +188,26 @@ public class MapaActivity extends AppCompatActivity
 
     }
 
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-
-        /*map.addMarker(new MarkerOptions()
-                .position(new LatLng(37.174946, -3.607592))
-                .title("Melbourne")
-                .snippet( "Long:" + LocalManagement.mValues.get(2).getLongitud()));*/
-
-
         for (int i = 0; i < LocalManagement.mValues.size(); i++) {
+            final int finalI = i;
 
-            map.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(i).getLatitud(), LocalManagement.mValues.get(i).getLongitud()))
-                    .title(LocalManagement.mValues.get(i).getTitulo())
-                    .snippet(LocalManagement.mValues.get(i).isAbierto()));
-
+            //Usa glide para descargar la imagen y convertirla en Bitmap (resource) para que pueda sustituir al Maker
+            //por defecto de Google
+            Glide.with(this)
+                    .asBitmap()
+                    .load(LocalManagement.mValues.get(i).getURLImagen())
+                    .into(new SimpleTarget<Bitmap>(200, 200) {
+                        @Override
+                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                            mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
+                                    .title(LocalManagement.mValues.get(finalI).getTitulo())
+                                    .snippet(LocalManagement.mValues.get(finalI).isAbierto()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
+                        }
+                    });
         }
 
         // Use a custom info window adapter to handle multiple lines of text in the
@@ -207,15 +223,15 @@ public class MapaActivity extends AppCompatActivity
             @Override
             public View getInfoContents(Marker marker) {
                 /**
-                // Inflate the layouts for the info window, title and snippet.
-                View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                        (FrameLayout) findViewById(R.id.map), false);
+                 // Inflate the layouts for the info window, title and snippet.
+                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
+                 (FrameLayout) findViewById(R.id.map), false);
 
-                TextView title = infoWindow.findViewById(R.id.title);
-                title.setText(marker.getTitle());
+                 TextView title = infoWindow.findViewById(R.id.title);
+                 title.setText(marker.getTitle());
 
-                TextView snippet = infoWindow.findViewById(R.id.snippet);
-                snippet.setText(marker.getSnippet());
+                 TextView snippet = infoWindow.findViewById(R.id.snippet);
+                 snippet.setText(marker.getSnippet());
                  */
 
                 //return infoWindow;
@@ -234,6 +250,7 @@ public class MapaActivity extends AppCompatActivity
         getDeviceLocation();
 
     }
+
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -266,7 +283,7 @@ public class MapaActivity extends AppCompatActivity
                     }
                 });
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
@@ -332,10 +349,9 @@ public class MapaActivity extends AppCompatActivity
 
             // Get the likely places - that is, the businesses and other points of interest that
             // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final
-            Task<FindCurrentPlaceResponse> placeResult =
+            @SuppressWarnings("MissingPermission") final Task<FindCurrentPlaceResponse> placeResult =
                     mPlacesClient.findCurrentPlace(request);
-            placeResult.addOnCompleteListener (new OnCompleteListener<FindCurrentPlaceResponse>() {
+            placeResult.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
                 @Override
                 public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
                     if (task.isSuccessful() && task.getResult() != null) {
@@ -372,8 +388,7 @@ public class MapaActivity extends AppCompatActivity
                         // Show a dialog offering the user the list of likely places, and add a
                         // marker at the selected place.
                         MapaActivity.this.openPlacesDialog();
-                    }
-                    else {
+                    } else {
                         Log.e(TAG, "Exception: %s", task.getException());
                     }
                 }
@@ -384,10 +399,10 @@ public class MapaActivity extends AppCompatActivity
 
             // Add a default marker, because the user hasn't selected a place.
             /**
-            mMap.addMarker(new MarkerOptions()
-                    .title(getString(R.string.default_info_title))
-                    .position(mDefaultLocation)
-                    .snippet(getString(R.string.default_info_snippet)));**/
+             mMap.addMarker(new MarkerOptions()
+             .title(getString(R.string.default_info_title))
+             .position(mDefaultLocation)
+             .snippet(getString(R.string.default_info_snippet)));**/
 
             // Prompt the user for permission.
             getLocationPermission();
@@ -425,10 +440,10 @@ public class MapaActivity extends AppCompatActivity
 
         // Display the dialog.
         /**
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle(R.string.pick_place)
-                .setItems(mLikelyPlaceNames, listener)
-                .show();*/
+         AlertDialog dialog = new AlertDialog.Builder(this)
+         .setTitle(R.string.pick_place)
+         .setItems(mLikelyPlaceNames, listener)
+         .show();*/
     }
 
     /**
@@ -448,7 +463,7 @@ public class MapaActivity extends AppCompatActivity
                 mLastKnownLocation = null;
                 getLocationPermission();
             }
-        } catch (SecurityException e)  {
+        } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }

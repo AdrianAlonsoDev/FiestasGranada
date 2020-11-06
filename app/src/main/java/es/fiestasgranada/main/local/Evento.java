@@ -15,16 +15,15 @@ public class Evento {
     private Local local;
 
 
-
     //constructores
 
-    public Evento(int id, String titulo, String descripcion , Date fecha, String URLImagen, Local local, boolean activo) {
+    public Evento(int id, String titulo, String descripcion, Date fecha, String URLImagen, Local local, boolean activo) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.URLImagen = URLImagen;
-        this.activo =  activo;
+        this.activo = activo;
         this.local = local;
     }
 
@@ -83,7 +82,6 @@ public class Evento {
     public void setLocal(Local local) {
         this.local = local;
     }
-
 
 
     @Override

@@ -7,7 +7,7 @@ public interface LocalListener {
 
     void onListFragmentInteraction(Local evento);
 
-    public void onClickLocal(Local evento);
+    void onClickLocal(Local evento);
 
 
 }

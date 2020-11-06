@@ -11,11 +11,11 @@ import es.fiestasgranada.main.activities.HomeActivity;
 
 public class ProgressBarAnimation extends Animation {
 
-    private Context context;
-    private ProgressBar progressBar;
-    private TextView textView;
-    private float from;
-    private float to;
+    private final Context context;
+    private final ProgressBar progressBar;
+    private final TextView textView;
+    private final float from;
+    private final float to;
 
     public ProgressBarAnimation(Context context, ProgressBar progressBar, TextView textView, float from, float to) {
         this.context = context;
@@ -26,13 +26,13 @@ public class ProgressBarAnimation extends Animation {
     }
 
     @Override
-    protected void applyTransformation (float interpolatedTime, Transformation t) {
+    protected void applyTransformation(float interpolatedTime, Transformation t) {
         super.applyTransformation(interpolatedTime, t);
         float value = from + (to - from) * interpolatedTime;
-        progressBar.setProgress((int)value);
-        textView.setText((int)value+" %");
+        progressBar.setProgress((int) value);
+        textView.setText((int) value + " %");
 
-        if(value == to) {
+        if (value == to) {
             context.startActivity(new Intent(context, HomeActivity.class));
         }
     }
