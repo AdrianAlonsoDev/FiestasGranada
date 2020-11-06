@@ -3,19 +3,15 @@ package es.fiestasgranada.main.local;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.StrictMode;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
-
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -23,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
@@ -42,9 +37,9 @@ public class LocalFragment extends Fragment {
 
     private int mColumnCount = 1;
     private LocalListener mListener;
-    static private List<Local> listado = new ArrayList<>();
+    static private final List<Local> listado = new ArrayList<>();
     private static Context context = null;
-    private static String URL_API = "https://fiestasgranada.synology.me/api.php";
+    private static final String URL_API = "https://michiochi.synology.me/api.php";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -86,6 +81,7 @@ public class LocalFragment extends Fragment {
 
 
         listado.clear();
+
         new DownloadJSON().execute();
         try {
             Thread.sleep(500);
@@ -137,7 +133,7 @@ public class LocalFragment extends Fragment {
                 }
             } catch (Exception e) {
 
-                Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
             }
             return null;
         }

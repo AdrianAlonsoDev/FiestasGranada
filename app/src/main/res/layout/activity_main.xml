@@ -13,17 +13,34 @@
 
     <ImageView
         android:id="@+id/fiestasGranada"
-        android:layout_width="235dp"
-        android:layout_height="228dp"
+        android:layout_width="134dp"
+        android:layout_height="84dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="8dp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/cargatexto"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/fiestasgranada"/>
+        app:srcCompat="@drawable/fiestasgranadaicono" />
+
+    <ImageView
+        android:id="@+id/fiestasGranadaIcon"
+        android:layout_width="307dp"
+        android:layout_height="125dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="8dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toTopOf="@+id/fiestasGranada"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/fiestasgranada" />
 
     <TextView
         android:id="@+id/cargatexto"

@@ -1,11 +1,12 @@
 package es.fiestasgranada.main.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
-
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -25,24 +26,27 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.PlaceLikelihood;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.listeners.Puntos;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
  */
 public class MapaActivity extends AppCompatActivity
         implements OnMapReadyCallback {
+
 
     private static final String TAG = MapaActivity.class.getSimpleName();
     private GoogleMap mMap;
@@ -76,32 +80,13 @@ public class MapaActivity extends AppCompatActivity
     private List[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    /**
+     * Manipulates the map when it's available.
+     * This callback is triggered when the map is ready to be used.
+     */
 
-        // Retrieve location and camera position from saved instance state.
-        if (savedInstanceState != null) {
-            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
-        }
-
-        // Retrieve the content view that renders the map.
-        setContentView(R.layout.activity_mapa);
-
-        // Construct a PlacesClient
-        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
-        mPlacesClient = Places.createClient(this);
-
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
-    }
+    private static final LatLng MELBOURNE = new LatLng(37.177, -3.609);
+    ArrayList<Puntos> listaPuntos = new ArrayList<>();
 
     /**
      * Saves the state of the map when the activity is paused.
@@ -120,32 +105,84 @@ public class MapaActivity extends AppCompatActivity
      * @param menu The options menu.
      * @return Boolean.
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.current_place_menu, menu);
-        return true;
-    }*/
+     @Override public boolean onCreateOptionsMenu(Menu menu) {
+     getMenuInflater().inflate(R.menu.current_place_menu, menu);
+     return true;
+     }*/
 
     /**
      * Handles a click on the menu option to get a place.
-     * @param item The menu item to handle.
+     *
      * @return Boolean.
+     * @Override public boolean onOptionsItemSelected(MenuItem item) {
+     * if (item.getItemId() == R.id.option_get_place) {
+     * showCurrentPlace();
+     * }
+     * return true;
+     * }
+     */
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.option_get_place) {
-            showCurrentPlace();
-        }
-        return true;
-    }*/
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-    /**
-     * Manipulates the map when it's available.
-     * This callback is triggered when the map is ready to be used.
-     */
+        setContentView(R.layout.activity_mapa);
+        //Initialize and Assign Variable
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+
+        //Set Mapa Selected
+        bottomNavigationView.setSelectedItemId(R.id.mapa);
+
+        //Perform ItemSelectedListener
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.cuenta:
+                        startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.home:
+                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                        overridePendingTransition(0, 0);
+                        return true;
+
+                    case R.id.mapa:
+                        return true;
+                }
+                return false;
+            }
+        });
+        // Retrieve location and camera position from saved instance state.
+        if (savedInstanceState != null) {
+            mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
+            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
+        }
+
+        // Retrieve the content view that renders the map.
+
+        // Construct a PlacesClient
+        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
+        mPlacesClient = Places.createClient(this);
+
+        // Construct a FusedLocationProviderClient.
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Build the map.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        map.addMarker(new MarkerOptions()
+                .position(MELBOURNE)
+                .title("Melbourne")
+                .snippet("Population: 4,137,400"));
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
@@ -174,6 +211,7 @@ public class MapaActivity extends AppCompatActivity
                 //return infoWindow;
                 return null;
             }
+
         });
 
         // Prompt the user for permission.
@@ -184,8 +222,8 @@ public class MapaActivity extends AppCompatActivity
 
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
-    }
 
+    }
     /**
      * Gets the current location of the device, and positions the map's camera.
      */
@@ -345,6 +383,7 @@ public class MapaActivity extends AppCompatActivity
             getLocationPermission();
         }
     }
+
 
     /**
      * Displays a form allowing the user to select a place from a list of likely places.

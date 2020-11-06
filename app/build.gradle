@@ -41,5 +41,6 @@ dependencies {
     //mapa
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'com.google.android.libraries.places:places:2.2.0'
+    compile 'com.android.support:support-annotations:+'
 
 }
