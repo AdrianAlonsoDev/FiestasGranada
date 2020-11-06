@@ -1,17 +1,15 @@
 package es.fiestasgranada.main.local;
 
-import java.util.Date;
-
 public class LocalConEntrada extends Local {
 
     //-----------------ATRIBUTOS NUEVOS---------------
     private double precioEntrada;
-    private String entradaIncluye;
+    private final String entradaIncluye;
 
     //constructor
 
-    public LocalConEntrada(int id, String titulo, String descripcion, String ubicacion, String fecha, String URLImagen, double precioEntrada, String entradaIncluye, String abierto) {
-        super(id, titulo, descripcion, ubicacion, fecha, URLImagen, abierto);
+    public LocalConEntrada(int id, String titulo, String descripcion, String fecha, String URLImagen, double latitud, double longitud, String abierto, double precioEntrada, String entradaIncluye) {
+        super(id, titulo, descripcion, fecha, URLImagen, latitud, longitud, abierto);
         this.precioEntrada = precioEntrada;
         this.entradaIncluye = entradaIncluye;
     }

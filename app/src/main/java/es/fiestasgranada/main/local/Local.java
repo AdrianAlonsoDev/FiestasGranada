@@ -3,29 +3,30 @@ package es.fiestasgranada.main.local;
 public class Local {
 
 
-
     //---------ATRIBUTOS------------------------
 
     private int id;
     private String titulo;
     private String descripcion;
-    private String ubicacion;
     private String fecha;
+    private double latitud;
+    private double longitud;
     private String URLImagen;
     private String abierto;
 
 
-
     //constructores
 
-    public Local(int id, String titulo, String descripcion, String ubicacion, String fecha, String URLImagen, String abierto) {
+    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, double latitud, double longitud, String abierto) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.URLImagen = URLImagen;
-        this.abierto =  abierto;
-        this.ubicacion = ubicacion;
+        this.latitud = latitud;
+        this.longitud = longitud;
+        this.abierto = abierto;
+
     }
 
     //setters y getters
@@ -54,12 +55,20 @@ public class Local {
         this.abierto = abierto;
     }
 
-    public String getUbicacion() {
-        return ubicacion;
+    public double getLatitud() {
+        return latitud;
     }
 
-    public void setUbicacion(String ubicacion) {
-        this.ubicacion = ubicacion;
+    public void setLatitud(double latitud) {
+        this.latitud = latitud;
+    }
+
+    public double getLongitud() {
+        return longitud;
+    }
+
+    public void getLongitud(double longitud) {
+        this.longitud = longitud;
     }
 
     public String getFecha() {
@@ -91,9 +100,10 @@ public class Local {
                 "id=" + id +
                 ", titulo='" + titulo + '\'' +
                 ", descripcion='" + descripcion + '\'' +
-                ", ubicacion=" + ubicacion +
                 ", fecha=" + fecha +
                 ", URLImagen='" + URLImagen + '\'' +
+                ", latitud=" + latitud +
+                ", longitud=" + longitud +
                 ", abierto=" + abierto +
                 '}';
     }

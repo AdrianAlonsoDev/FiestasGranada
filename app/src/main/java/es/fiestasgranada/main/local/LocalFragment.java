@@ -124,9 +124,10 @@ public class LocalFragment extends Fragment {
                         listado.add(new Local(obj.getInt("id"),
                                 obj.getString("titulo"),
                                 obj.getString("descripcion"),
-                                obj.getString("ubicacion"),
                                 obj.getString("fecha"),
                                 obj.getString("URLImagen"),
+                                obj.getDouble("latitud"),
+                                obj.getDouble("longitud"),
                                 obj.getString("abierto")));
 
                     }

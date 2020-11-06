@@ -38,6 +38,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.local.LocalManagement;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
@@ -130,6 +131,7 @@ public class MapaActivity extends AppCompatActivity
         //Set Mapa Selected
         bottomNavigationView.setSelectedItemId(R.id.mapa);
 
+
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -166,6 +168,7 @@ public class MapaActivity extends AppCompatActivity
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -176,10 +179,20 @@ public class MapaActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
-        map.addMarker(new MarkerOptions()
-                .position(MELBOURNE)
+
+        /*map.addMarker(new MarkerOptions()
+                .position(new LatLng(37.174946, -3.607592))
                 .title("Melbourne")
-                .snippet("Population: 4,137,400"));
+                .snippet( "Long:" + LocalManagement.mValues.get(2).getLongitud()));*/
+
+
+        for (int i = 0; i < LocalManagement.mValues.size(); i++) {
+
+            map.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(i).getLatitud(), LocalManagement.mValues.get(i).getLongitud()))
+                    .title(LocalManagement.mValues.get(i).getTitulo())
+                    .snippet(LocalManagement.mValues.get(i).isAbierto()));
+
+        }
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.

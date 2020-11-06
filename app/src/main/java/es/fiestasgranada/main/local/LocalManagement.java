@@ -1,17 +1,17 @@
 package es.fiestasgranada.main.local;
 
-import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.AutoTransition;
+import androidx.transition.TransitionManager;
 
 import com.squareup.picasso.Picasso;
 
@@ -23,7 +23,7 @@ import es.fiestasgranada.main.listeners.LocalListener;
 
 public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHolder> {
 
-    private final List<Local> mValues;
+    public static List<Local> mValues;
     private final LocalListener mListener;
 
 
@@ -49,6 +49,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         //Pone el título y la descripción.
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
+
 
         //Carga las imágenes mediante URL
         Picasso.get().load(mValues.get(position).getURLImagen()).into(holder.mImagenEvento);
@@ -100,21 +101,21 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             super(view);
             mView = view;
 
-            mTituloView = (TextView) view.findViewById(R.id.tituloLocal);
+            mTituloView = view.findViewById(R.id.tituloLocal);
 
-            mDescripccionView = (TextView) view.findViewById(R.id.descOculta);
+            mDescripccionView = view.findViewById(R.id.descOculta);
 
-            mImagenEvento = (ImageView) view.findViewById(R.id.imagenLocal);
+            mImagenEvento = view.findViewById(R.id.imagenLocal);
 
-            disponibilidadEvento = (TextView) view.findViewById(R.id.disponibilidadLocal);
+            disponibilidadEvento = view.findViewById(R.id.disponibilidadLocal);
 
-            noDisponibilidadEvento = (TextView) view.findViewById(R.id.noDisponibilidadLocal);
+            noDisponibilidadEvento = view.findViewById(R.id.noDisponibilidadLocal);
 
             expandableView = view.findViewById(R.id.descripcionLocal);
 
             cardView = view.findViewById(R.id.cardView);
 
-            listenerEventoView = (CardView) view.findViewById(R.id.cardView);
+            listenerEventoView = view.findViewById(R.id.cardView);
 
             botonOfertas = view.findViewById(R.id.botonOfertas);
 
