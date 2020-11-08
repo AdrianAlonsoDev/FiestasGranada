@@ -8,8 +8,8 @@ public class LocalConEntrada extends Local {
 
     //constructor
 
-    public LocalConEntrada(int id, String titulo, String descripcion, String fecha, String URLImagen, double latitud, double longitud, String abierto, double precioEntrada, String entradaIncluye) {
-        super(id, titulo, descripcion, fecha, URLImagen, latitud, longitud, abierto);
+    public LocalConEntrada(int id, String titulo, String descripcion, String fecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, double precioEntrada, String entradaIncluye) {
+        super(id, titulo, descripcion, fecha, URLImagen, URLIcono, latitud, longitud, abierto);
         this.precioEntrada = precioEntrada;
         this.entradaIncluye = entradaIncluye;
     }

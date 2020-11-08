@@ -12,17 +12,19 @@ public class Local {
     private double latitud;
     private double longitud;
     private String URLImagen;
+    private String URLIcono;
     private String abierto;
 
 
     //constructores
 
-    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, double latitud, double longitud, String abierto) {
+    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.URLImagen = URLImagen;
+        this.URLIcono = URLIcono;
         this.latitud = latitud;
         this.longitud = longitud;
         this.abierto = abierto;
@@ -38,6 +40,15 @@ public class Local {
     public void setURLImagen(String URLImagen) {
         this.URLImagen = URLImagen;
     }
+
+    public String getURLIcono() {
+        return URLIcono;
+    }
+
+    public void setURLIcono(String URLIcono) {
+        this.URLIcono = URLIcono;
+    }
+
 
     public String getTitulo() {
         return titulo;

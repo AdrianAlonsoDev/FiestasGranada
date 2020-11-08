@@ -126,6 +126,7 @@ public class LocalFragment extends Fragment {
                                 obj.getString("descripcion"),
                                 obj.getString("fecha"),
                                 obj.getString("URLImagen"),
+                                obj.getString("URLIcono"),
                                 obj.getDouble("latitud"),
                                 obj.getDouble("longitud"),
                                 obj.getString("abierto")));

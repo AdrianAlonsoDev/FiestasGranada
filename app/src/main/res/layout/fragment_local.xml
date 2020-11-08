@@ -7,8 +7,7 @@
     android:background="#00E4E3E3"
     tools:context=".local.LocalManagement"
     android:animateLayoutChanges="true"
-    android:layout_marginBottom="10dp"
-    >
+    android:layout_marginBottom="10dp">
 
     <!--
     CardView principal
@@ -26,8 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:cardCornerRadius="3dp"
-        >
+        app:cardCornerRadius="3dp">
         <!--
         Trabajamos dentro de un Constraint Layout
             - Titulo
@@ -171,7 +169,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
