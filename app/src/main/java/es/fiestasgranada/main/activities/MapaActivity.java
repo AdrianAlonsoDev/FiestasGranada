@@ -1,15 +1,23 @@
 package es.fiestasgranada.main.activities;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +38,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
@@ -39,23 +48,50 @@ import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
 import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.local.LocalManagement;
+import es.fiestasgranada.main.util.DirectionParser;
+import es.fiestasgranada.main.util.ImageCoverter;
 
 /**
  * An activity that displays a map showing the place at the device's current location.
  */
 public class MapaActivity extends AppCompatActivity
-        implements OnMapReadyCallback {
+        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
+    /**
+     * Manipulates the map when it's available.
+     * This callback is triggered when the map is ready to be used.
+     */
+
+    private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
 
     private static final String TAG = MapaActivity.class.getSimpleName();
     private GoogleMap mMap;
+    /**
+     * Request app permission for API 23/ Android 6.0
+     *
+     * @param permission
+     */
+    private final static int MY_PERMISSIONS_REQUEST = 32;
     private CameraPosition mCameraPosition;
+    public static Context context;
 
     // The entry point to the Places API.
     private PlacesClient mPlacesClient;
@@ -84,14 +120,15 @@ public class MapaActivity extends AppCompatActivity
     private String[] mLikelyPlaceAddresses;
     private List[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
-
-
-    /**
-     * Manipulates the map when it's available.
-     * This callback is triggered when the map is ready to be used.
-     */
-
-    private static final LatLng MELBOURNE = new LatLng(37.177, -3.609);
+    Marker marker_1;
+    ImageCoverter convertidor = new ImageCoverter();
+    ImageView imgmarker;
+    ImageView iconM;
+    LinearLayout tapactionlayout;
+    View bottomSheet;
+    TextView txtnombre_local, txtDescripcion, txtDireccion;
+    private LatLng mOrigin;
+    private LatLng mDestination;
 
     /**
      * Saves the state of the map when the activity is paused.
@@ -107,13 +144,15 @@ public class MapaActivity extends AppCompatActivity
 
     /**
      * Sets up the options menu.
+     *
      * @param menu The options menu.
      * @return Boolean.
-
-     @Override public boolean onCreateOptionsMenu(Menu menu) {
-     getMenuInflater().inflate(R.menu.current_place_menu, menu);
-     return true;
-     }*/
+     * @Override public boolean onCreateOptionsMenu(Menu menu) {
+     * getMenuInflater().inflate(R.menu.current_place_menu, menu);
+     * return true;
+     * }
+     */
+    private BottomSheetBehavior mBottomSheetBehavior1;
 
     /**
      * Handles a click on the menu option to get a place.
@@ -131,6 +170,8 @@ public class MapaActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        context = getApplicationContext();
+
         setContentView(R.layout.activity_mapa);
 
         //Initialize and Assign Variable
@@ -139,6 +180,11 @@ public class MapaActivity extends AppCompatActivity
         //Set Mapa Selected
         bottomNavigationView.setSelectedItemId(R.id.mapa);
 
+        //MAKE ROUTE
+        // mOrigin = new LatLng(37.177,-3.609);
+        // mDestination = new LatLng(LocalManagement.mValues.get(1).getLatitud(),LocalManagement.mValues.get(1).getLongitud());
+
+        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION);
         if (android.os.Build.VERSION.SDK_INT > 9) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
@@ -186,9 +232,57 @@ public class MapaActivity extends AppCompatActivity
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+
+        View headerLayout1 = findViewById(R.id.bottomJsoft);
+        imgmarker = findViewById(R.id.ImgMarker);
+        iconM = findViewById(R.id.iconM);
+
+        txtnombre_local = findViewById(R.id.txtNombreLocal);
+        txtDescripcion = findViewById(R.id.txtDescripcion);
+        txtDireccion = findViewById(R.id.txtDireccion);
+        tapactionlayout = findViewById(R.id.tap_action_layout);
+        bottomSheet = findViewById(R.id.bottomJsoft);
+        mBottomSheetBehavior1 = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior1.setPeekHeight(120);
+        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        mBottomSheetBehavior1.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                    tapactionlayout.setVisibility(View.VISIBLE);
+                }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED) {
+                    tapactionlayout.setVisibility(View.GONE);
+                }
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    tapactionlayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        tapactionlayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mBottomSheetBehavior1.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                    mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
+            }
+        });
+
     }
 
-
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -199,46 +293,27 @@ public class MapaActivity extends AppCompatActivity
             //por defecto de Google
             Glide.with(this)
                     .asBitmap()
-                    .load(LocalManagement.mValues.get(i).getURLImagen())
-                    .into(new SimpleTarget<Bitmap>(200, 200) {
+                    .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
+                    .into(new SimpleTarget<Bitmap>(180, 180) {
                         @Override
                         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                            mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
+                            final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
                                     .title(LocalManagement.mValues.get(finalI).getTitulo())
-                                    .snippet(LocalManagement.mValues.get(finalI).isAbierto()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
+                                    .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
+                            marcador.setTag(finalI);
+
                         }
                     });
         }
 
-        // Use a custom info window adapter to handle multiple lines of text in the
-        // info window contents.
-        mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+        //LISTENER
+        mMap.setOnMarkerClickListener(this);
 
-            @Override
-            // Return null here, so that getInfoContents() is called next.
-            public View getInfoWindow(Marker arg0) {
-                return null;
-            }
-
-            @Override
-            public View getInfoContents(Marker marker) {
-                /**
-                 // Inflate the layouts for the info window, title and snippet.
-                 View infoWindow = getLayoutInflater().inflate(R.layout.custom_info_contents,
-                 (FrameLayout) findViewById(R.id.map), false);
-
-                 TextView title = infoWindow.findViewById(R.id.title);
-                 title.setText(marker.getTitle());
-
-                 TextView snippet = infoWindow.findViewById(R.id.snippet);
-                 snippet.setText(marker.getSnippet());
-                 */
-
-                //return infoWindow;
-                return null;
-            }
-
-        });
+        //MAKE ROUTES
+        //  Show marker on the screen and adjust the zoom level
+        //  mMap.addMarker(new MarkerOptions().position(mOrigin).title("Origin"));
+        //  mMap.addMarker(new MarkerOptions().position(mDestination).title("Destination"));
+        //  new TaskDirectionRequest().execute(buildRequestUrl(mOrigin,mDestination));
 
         // Prompt the user for permission.
         getLocationPermission();
@@ -249,43 +324,39 @@ public class MapaActivity extends AppCompatActivity
         // Get the current location of the device and set the position of the map.
         getDeviceLocation();
 
+
     }
 
-    /**
-     * Gets the current location of the device, and positions the map's camera.
-     */
-    private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+    @Override
+    public boolean
+    onMarkerClick(final Marker marker) {
+
+        int id = (Integer) marker.getTag();
+
+        convertidor.donwload(getApplicationContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
+        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
+        txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
+        txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
+        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
+        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(LocalManagement.mValues.get(id).getLatitud(),
+                        LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
+
+
+
+        /*Glide.with(this)
+                .asBitmap()
+                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
+                .into(new SimpleTarget<Bitmap>(200, 200) {
                     @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            }
-                        } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resource));
                     }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
+                });*/
+
+        return false;
     }
 
 
@@ -447,6 +518,43 @@ public class MapaActivity extends AppCompatActivity
     }
 
     /**
+     * Gets the current location of the device, and positions the map's camera.
+     */
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
+        try {
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            mLastKnownLocation = task.getResult();
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            }
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(PEDROANTONIO, DEFAULT_ZOOM));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    /**
      * Updates the map's UI settings based on whether the user has granted location permission.
      */
     private void updateLocationUI() {
@@ -457,6 +565,8 @@ public class MapaActivity extends AppCompatActivity
             if (mLocationPermissionGranted) {
                 mMap.setMyLocationEnabled(true);
                 mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMapToolbarEnabled(true);
+
             } else {
                 mMap.setMyLocationEnabled(false);
                 mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -465,6 +575,146 @@ public class MapaActivity extends AppCompatActivity
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    /**
+     * Create requested url for Direction API to get routes from origin to destination
+     *
+     * @param origin
+     * @param destination
+     * @return
+     */
+    private String buildRequestUrl(LatLng origin, LatLng destination) {
+        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
+        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
+        String output = "json";
+        String APIKEY = getResources().getString(R.string.google_maps_key);
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=" + APIKEY;
+        Log.d("TAG", url);
+        return url;
+    }
+
+    /**
+     * Request direction from Google Direction API
+     *
+     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
+     * @return JSON data routes/direction
+     */
+    private String requestDirection(String requestedUrl) {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(requestedUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        httpURLConnection.disconnect();
+        return responseString;
+    }
+
+    private void requestPermission(String permission) {
+        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{permission},
+                    MY_PERMISSIONS_REQUEST);
+        }
+    }
+
+    //Get JSON data from Google Direction
+    public class TaskDirectionRequest extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... strings) {
+            String responseString = "";
+            try {
+                responseString = requestDirection(strings[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return responseString;
+        }
+
+        @Override
+        protected void onPostExecute(String responseString) {
+            super.onPostExecute(responseString);
+            //Json object parsing
+            TaskParseDirection parseResult = new TaskParseDirection();
+            parseResult.execute(responseString);
+        }
+    }
+
+    //Parse JSON Object from Google Direction API & display it on Map
+    public class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
+            List<List<HashMap<String, String>>> routes = null;
+            JSONObject jsonObject = null;
+
+            try {
+                jsonObject = new JSONObject(jsonString[0]);
+                DirectionParser parser = new DirectionParser();
+                routes = parser.parse(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+            super.onPostExecute(lists);
+            ArrayList points = null;
+            PolylineOptions polylineOptions = null;
+
+            for (List<HashMap<String, String>> path : lists) {
+                points = new ArrayList();
+                polylineOptions = new PolylineOptions();
+
+                for (HashMap<String, String> point : path) {
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lon = Double.parseDouble(point.get("lng"));
+
+                    points.add(new LatLng(lat, lon));
+                }
+                polylineOptions.addAll(points);
+                polylineOptions.width(15f);
+                polylineOptions.color(Color.BLUE);
+                polylineOptions.geodesic(true);
+            }
+            if (polylineOptions != null) {
+                mMap.addPolyline(polylineOptions);
+            } else {
+                Toast.makeText(getApplicationContext(), "Direction not found", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
