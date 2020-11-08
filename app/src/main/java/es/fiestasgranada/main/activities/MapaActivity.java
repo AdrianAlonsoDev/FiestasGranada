@@ -1,6 +1,5 @@
 package es.fiestasgranada.main.activities;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +9,6 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -84,12 +82,7 @@ public class MapaActivity extends AppCompatActivity
 
     private static final String TAG = MapaActivity.class.getSimpleName();
     private GoogleMap mMap;
-    /**
-     * Request app permission for API 23/ Android 6.0
-     *
-     * @param permission
-     */
-    private final static int MY_PERMISSIONS_REQUEST = 32;
+
     private CameraPosition mCameraPosition;
     public static Context context;
 
@@ -120,7 +113,6 @@ public class MapaActivity extends AppCompatActivity
     private String[] mLikelyPlaceAddresses;
     private List[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
-    Marker marker_1;
     ImageCoverter convertidor = new ImageCoverter();
     ImageView imgmarker;
     ImageView iconM;
@@ -129,6 +121,7 @@ public class MapaActivity extends AppCompatActivity
     TextView txtnombre_local, txtDescripcion, txtDireccion;
     private LatLng mOrigin;
     private LatLng mDestination;
+    private int id;
 
     /**
      * Saves the state of the map when the activity is paused.
@@ -183,12 +176,6 @@ public class MapaActivity extends AppCompatActivity
         //MAKE ROUTE
         // mOrigin = new LatLng(37.177,-3.609);
         // mDestination = new LatLng(LocalManagement.mValues.get(1).getLatitud(),LocalManagement.mValues.get(1).getLongitud());
-
-        requestPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-        if (android.os.Build.VERSION.SDK_INT > 9) {
-            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-            StrictMode.setThreadPolicy(policy);
-        }
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -286,6 +273,11 @@ public class MapaActivity extends AppCompatActivity
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        try {
+            Thread.sleep(400);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         for (int i = 0; i < LocalManagement.mValues.size(); i++) {
             final int finalI = i;
 
@@ -301,7 +293,6 @@ public class MapaActivity extends AppCompatActivity
                                     .title(LocalManagement.mValues.get(finalI).getTitulo())
                                     .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
                             marcador.setTag(finalI);
-
                         }
                     });
         }
@@ -331,7 +322,7 @@ public class MapaActivity extends AppCompatActivity
     public boolean
     onMarkerClick(final Marker marker) {
 
-        int id = (Integer) marker.getTag();
+        id = (Integer) marker.getTag();
 
         convertidor.donwload(getApplicationContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
         // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
@@ -640,14 +631,6 @@ public class MapaActivity extends AppCompatActivity
         }
         httpURLConnection.disconnect();
         return responseString;
-    }
-
-    private void requestPermission(String permission) {
-        if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{permission},
-                    MY_PERMISSIONS_REQUEST);
-        }
     }
 
     //Get JSON data from Google Direction

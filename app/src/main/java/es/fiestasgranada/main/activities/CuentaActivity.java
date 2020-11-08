@@ -28,21 +28,16 @@ public class CuentaActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.mapa:
-                        startActivity(new Intent(getApplicationContext(), MapaActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.cuenta:
-                        return true;
-                }
-                return false;
+                int itemId = menuItem.getItemId();
+                if (itemId == R.id.mapa) {
+                    startActivity(new Intent(getApplicationContext(), MapaActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else if (itemId == R.id.home) {
+                    startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                } else return itemId == R.id.cuenta;
             }
         });
     }
