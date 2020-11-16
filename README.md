@@ -3,6 +3,37 @@
 </p>
 <h1 align="center">➤ FiestasGranada readme</h1>
 
+</p>
+<p align="center">
+  <b>Descripción de la aplicación.</b>
+	
+  <sub>Esta aplicación está enfocada para la gente que busca tener un momento de diversión,
+	ocio o salir de fiesta, dando a conocer al usuario de los lugares más cercanos ya sean
+	restaurantes, pubs, discotecas y más.</sub>	
+   <sub>Principalmente busca al público joven y estudiantil, pero no quita que cualquier persona
+	de la edad que sea, pueda utilizarla.</sub>
+	
+   <sub>La aplicación se podría descargar y usar sin necesidad de registrarse, lo que le permitiría
+	observar un menú donde puede elegir ver una lista de lugares cercanos, un mapa con
+	marcadores de los sitios más cercanos, o acceder con una cuenta para logearte y obtener
+	beneficios distintos
+   </sub>
+</p>
+
+<br>
+
+<ul>
+  <li> <sub>Menú principal</sub>
+    <ul>
+      <li> <sub>Lista de lugares cercanos</sub> </li>
+      <li><sub>Mapa con los lugares más cercanos</sub> </li>
+      <li>  <sub>Cuenta (Inicio de sesión/perfil)</sub> </li>
+      </li>
+    </ul>
+  </ul>
+<ul>
+
+
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)](#contributors)
 
 <p align="center">
