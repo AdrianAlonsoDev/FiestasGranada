@@ -335,8 +335,6 @@ public class MapaActivity extends AppCompatActivity
                 new LatLng(LocalManagement.mValues.get(id).getLatitud(),
                         LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
 
-
-
         /*Glide.with(this)
                 .asBitmap()
                 .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
