@@ -28,5 +28,5 @@
 
 | [<img alt="Adrián Alonso" src="https://avatars2.githubusercontent.com/u/6146371?s=460&u=1c80141b17949434112ab16c8bb853849ae79199&v=4" width="100">](https://twitter.com/arhlexwow) | <img alt="PabloPicoTres" src="https://avatars0.githubusercontent.com/u/62216894?s=460&u=33a2d9438b550a71515dbbd2c71d5a311eb5dc7f&v=4" width="100"> |
 |:--------------------------------------------------:|:--------------------------------------------------:|
-| [Adrián Alonso](https://twitter.com/arhlexwow) | PabloPicoTres |
+| [Adrián Alonso](https://twitter.com/arhlexwow) | [PabloPicoTres] (https://github.com/PabloPicoTres) |
 | 🔥                                               |  🚗                                                |
