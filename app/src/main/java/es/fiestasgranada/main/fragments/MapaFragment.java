@@ -1,8 +1,7 @@
-package es.fiestasgranada.main.activities;
+package es.fiestasgranada.main.fragments;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,17 +9,19 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -30,7 +31,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -63,73 +63,50 @@ import java.util.HashMap;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.activities.MapaActivity;
 import es.fiestasgranada.main.local.LocalManagement;
 import es.fiestasgranada.main.util.DirectionParser;
 import es.fiestasgranada.main.util.ImageCoverter;
 
-/**
- * An activity that displays a map showing the place at the device's current location.
- */
-public class MapaActivity extends AppCompatActivity
-        implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+public class MapaFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
 
     private static final String TAG = MapaActivity.class.getSimpleName();
-    private GoogleMap mMap;
-
-    private CameraPosition mCameraPosition;
-    public static Context context;
-
-    // The entry point to the Places API.
-    private PlacesClient mPlacesClient;
-
-    // The entry point to the Fused Location Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient;
-
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
-    // not granted.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private boolean mLocationPermissionGranted;
-
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-    private Location mLastKnownLocation;
-
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
-    private String[] mLikelyPlaceNames;
-    private String[] mLikelyPlaceAddresses;
-    private List[] mLikelyPlaceAttributions;
-    private LatLng[] mLikelyPlaceLatLngs;
+    public static Context context;
+    // A default location (Sydney, Australia) and default zoom to use when location permission is
+    // not granted.
+    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
     ImageCoverter convertidor = new ImageCoverter();
     ImageView imgmarker;
     ImageView iconM;
     LinearLayout tapactionlayout;
     View bottomSheet;
     TextView txtnombre_local, txtDescripcion, txtDireccion;
+    private GoogleMap mMap;
+    private CameraPosition mCameraPosition;
+    // The entry point to the Places API.
+    private PlacesClient mPlacesClient;
+    // The entry point to the Fused Location Provider.
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private boolean mLocationPermissionGranted;
+    // The geographical location where the device is currently located. That is, the last-known
+    // location retrieved by the Fused Location Provider.
+    private Location mLastKnownLocation;
+    private String[] mLikelyPlaceNames;
+    private String[] mLikelyPlaceAddresses;
+    private List[] mLikelyPlaceAttributions;
+    private LatLng[] mLikelyPlaceLatLngs;
     private LatLng mOrigin;
     private LatLng mDestination;
     private int id;
-
-    /**
-     * Saves the state of the map when the activity is paused.
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mMap != null) {
-            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
-            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
-            super.onSaveInstanceState(outState);
-        }
-    }
-
     /**
      * Sets up the options menu.
      *
@@ -141,6 +118,23 @@ public class MapaActivity extends AppCompatActivity
      * }
      */
     private BottomSheetBehavior mBottomSheetBehavior1;
+    private Context mContext;
+
+    public MapaFragment() {
+        // Required empty public constructor
+    }
+
+    /**
+     * Saves the state of the map when the activity is paused.
+     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        if (mMap != null) {
+            outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
+            outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
+            super.onSaveInstanceState(outState);
+        }
+    }
 
     /**
      * Handles a click on the menu option to get a place.
@@ -155,43 +149,32 @@ public class MapaActivity extends AppCompatActivity
      */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        context = getApplicationContext();
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_cuenta, container, false);
+    }
 
-        setContentView(R.layout.activity_mapa);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        context = getContext();
 
         //Initialize and Assign Variable
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
+        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_nav);
 
-        //Set Mapa Selected
-        bottomNavigationView.setSelectedItemId(R.id.mapa);
-
-        //MAKE ROUTE
-        // mOrigin = new LatLng(37.177,-3.609);
-        // mDestination = new LatLng(LocalManagement.mValues.get(1).getLatitud(),LocalManagement.mValues.get(1).getLongitud());
-
-        //Perform ItemSelectedListener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                switch (menuItem.getItemId()) {
-                    case R.id.cuenta:
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.home:
-                        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-                        overridePendingTransition(0, 0);
-                        return true;
-
-                    case R.id.mapa:
-                        return true;
-                }
-                return false;
-            }
-        });
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
@@ -201,28 +184,28 @@ public class MapaActivity extends AppCompatActivity
         // Retrieve the content view that renders the map.
 
         // Construct a PlacesClient
-        Places.initialize(getApplicationContext(), getString(R.string.google_maps_key));
-        mPlacesClient = Places.createClient(this);
+        Places.initialize(getContext(), getString(R.string.google_maps_key));
+        mPlacesClient = Places.createClient(getContext());
 
         // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
 
         // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(this);*/
 
 
-        View headerLayout1 = findViewById(R.id.bottomJsoft);
-        imgmarker = findViewById(R.id.ImgMarker);
-        iconM = findViewById(R.id.iconM);
+        View headerLayout1 = view.findViewById(R.id.bottomJsoft);
+        imgmarker = view.findViewById(R.id.ImgMarker);
+        iconM = view.findViewById(R.id.iconM);
 
-        txtnombre_local = findViewById(R.id.txtNombreLocal);
-        txtDescripcion = findViewById(R.id.txtDescripcion);
-        txtDireccion = findViewById(R.id.txtDireccion);
-        tapactionlayout = findViewById(R.id.tap_action_layout);
-        bottomSheet = findViewById(R.id.bottomJsoft);
+        txtnombre_local = view.findViewById(R.id.txtNombreLocal);
+        txtDescripcion = view.findViewById(R.id.txtDescripcion);
+        txtDireccion = view.findViewById(R.id.txtDireccion);
+        tapactionlayout = view.findViewById(R.id.tap_action_layout);
+        bottomSheet = view.findViewById(R.id.bottomJsoft);
         mBottomSheetBehavior1 = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior1.setPeekHeight(120);
         mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -254,16 +237,40 @@ public class MapaActivity extends AppCompatActivity
             }
         });
 
+
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        id = (Integer) marker.getTag();
+
+        convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
+        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
+        txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
+        txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
+        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
+        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(LocalManagement.mValues.get(id).getLatitud(),
+                        LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
+
+
+
+        /*Glide.with(this)
+                .asBitmap()
+                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
+                .into(new SimpleTarget<Bitmap>(200, 200) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resource));
+                    }
+                });*/
+
+        return false;
+    }
+
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -312,39 +319,6 @@ public class MapaActivity extends AppCompatActivity
 
     }
 
-    @Override
-    public boolean
-    onMarkerClick(final Marker marker) {
-
-        id = (Integer) marker.getTag();
-
-        convertidor.donwload(getApplicationContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
-        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
-        txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
-        txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
-        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
-        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(LocalManagement.mValues.get(id).getLatitud(),
-                        LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
-
-
-
-        /*Glide.with(this)
-                .asBitmap()
-                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
-                .into(new SimpleTarget<Bitmap>(200, 200) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resource));
-                    }
-                });*/
-
-        return false;
-    }
-
-
     /**
      * Prompts the user for permission to use the device location.
      */
@@ -354,12 +328,12 @@ public class MapaActivity extends AppCompatActivity
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(this.getContext(),
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(getActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
@@ -443,7 +417,6 @@ public class MapaActivity extends AppCompatActivity
 
                         // Show a dialog offering the user the list of likely places, and add a
                         // marker at the selected place.
-                        MapaActivity.this.openPlacesDialog();
                     } else {
                         Log.e(TAG, "Exception: %s", task.getException());
                     }
@@ -513,7 +486,7 @@ public class MapaActivity extends AppCompatActivity
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
                     @Override
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful()) {
@@ -644,7 +617,7 @@ public class MapaActivity extends AppCompatActivity
         protected void onPostExecute(String responseString) {
             super.onPostExecute(responseString);
             //Json object parsing
-            TaskParseDirection parseResult = new TaskParseDirection();
+            MapaFragment.TaskParseDirection parseResult = new MapaFragment.TaskParseDirection();
             parseResult.execute(responseString);
         }
     }
@@ -690,9 +663,9 @@ public class MapaActivity extends AppCompatActivity
             if (polylineOptions != null) {
                 mMap.addPolyline(polylineOptions);
             } else {
-                Toast.makeText(getApplicationContext(), "Direction not found", Toast.LENGTH_LONG).show();
+                Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
             }
         }
     }
-}
 
+}

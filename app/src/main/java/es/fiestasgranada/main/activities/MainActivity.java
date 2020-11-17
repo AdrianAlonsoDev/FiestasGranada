@@ -15,6 +15,25 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     TextView textView;
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        setContentView(R.layout.activity_main);
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        progressBar = findViewById(R.id.cargabarra);
+        textView = findViewById(R.id.cargatexto);
+
+        progressBar.setMax(100);
+        progressBar.setScaleY(3f);
+
+        progressAnimation();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

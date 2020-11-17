@@ -58,6 +58,7 @@ public class HomeActivity extends AppCompatActivity implements LocalListener {
                     //startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
                     //Llamar a fragment
                     transaccion.replace(R.id.cuentaFragment, new CuentaFragment()).commit();
+
                     // bottomNavigationView.setSelectedItemId(R.id.cuenta);
                     overridePendingTransition(0, 0);
                     returnBool = true;

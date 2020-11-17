@@ -34,7 +34,6 @@
         <activity
             android:name=".activities.MapaActivity"
             android:label="@string/title_activity_mapa_generado" />
-        <activity android:name=".activities.CuentaActivity" />
         <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>
