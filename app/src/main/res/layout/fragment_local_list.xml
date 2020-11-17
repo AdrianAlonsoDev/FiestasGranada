@@ -11,5 +11,5 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     android:background="#00FFFFFF"
-    tools:context=".local.LocalFragment"
+    tools:context=".fragments.LocalFragment"
     tools:listitem="@layout/fragment_local" />

@@ -183,7 +183,6 @@ public class MapaActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.cuenta:
-                        startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
                         overridePendingTransition(0, 0);
                         return true;
 

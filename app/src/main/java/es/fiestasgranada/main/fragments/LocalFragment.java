@@ -1,4 +1,4 @@
-package es.fiestasgranada.main.local;
+package es.fiestasgranada.main.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -23,6 +23,8 @@ import java.util.List;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.listeners.LocalListener;
+import es.fiestasgranada.main.local.Local;
+import es.fiestasgranada.main.local.LocalManagement;
 
 
 /**
