@@ -2,12 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/direccionButtonCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#00E4E3E3"
-    tools:context=".local.LocalManagement"
+    android:layout_marginBottom="10dp"
     android:animateLayoutChanges="true"
-    android:layout_marginBottom="10dp">
+    android:background="#00E4E3E3"
+    tools:context=".local.LocalManagement">
 
     <!--
     CardView principal
@@ -16,16 +17,16 @@
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
         android:elevation="2dp"
+        app:cardBackgroundColor="#A6242842"
+        app:cardCornerRadius="3dp"
         app:cardElevation="2dp"
-        app:cardBackgroundColor="#202020"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:cardCornerRadius="3dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
         <!--
         Trabajamos dentro de un Constraint Layout
             - Titulo
@@ -35,9 +36,9 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/localConstraint"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingBottom="2dp"
-            android:elevation="4dp">
+            android:layout_height="wrap_content"
+            android:elevation="4dp"
+            android:paddingBottom="2dp">
 
             <TextView
                 android:id="@+id/tituloLocal"
@@ -52,45 +53,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/imagenLocal" />
 
 
-            <Button
-                android:id="@+id/botonOfertas"
-                android:layout_width="46dp"
-                android:layout_height="38dp"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginRight="32dp"
-                android:background="@drawable/oferta"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imagenLocal"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <ImageView
-                android:id="@+id/imagenLocal"
-                android:layout_width="match_parent"
-                android:layout_height="220dp"
-                android:elevation="2dp"
-                android:layout_margin="4dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintDimensionRatio="H,16:9"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <!--
              Trabajamos dentro de otro Constraint Layout
                - Info evento
                - Abierto
                - Ubicacion
             -->
+            <ImageView
+                android:id="@+id/imagenLocal"
+                android:layout_width="match_parent"
+                android:layout_height="220dp"
+                android:layout_margin="4dp"
+                android:layout_marginTop="4dp"
+                android:elevation="2dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintDimensionRatio="H,16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/infoLocal"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
-                android:background="#A30B0B0B"
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
+                android:background="#BA0B0B0B"
                 android:elevation="100dp"
                 app:layout_constraintBottom_toBottomOf="@+id/imagenLocal"
                 app:layout_constraintEnd_toEndOf="@+id/imagenLocal"
@@ -107,10 +95,10 @@
                     android:background="@drawable/botonabierto"
                     android:elevation="100dp"
                     android:text="Abierto"
-                    android:visibility="gone"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="normal"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.951"
@@ -119,21 +107,71 @@
 
                 <TextView
                     android:id="@+id/noDisponibilidadLocal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="51dp"
+                    android:layout_height="21dp"
                     android:layout_centerInParent="true"
+                    android:layout_marginEnd="4dp"
+                    android:layout_marginRight="4dp"
                     android:background="@drawable/botoncerrado"
                     android:elevation="100dp"
                     android:text="Cerrado"
                     android:textColor="#FFFFFF"
-                    android:textSize="16sp"
+                    android:textSize="13sp"
                     android:textStyle="normal"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.951"
+                    app:layout_constraintStart_toEndOf="@+id/botonOfertas"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.454" />
+
+                <Button
+                    android:id="@+id/botonOfertas"
+                    android:layout_width="30dp"
+                    android:layout_height="23dp"
+                    android:layout_marginStart="276dp"
+                    android:layout_marginLeft="276dp"
+                    android:background="@drawable/oferta"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textViewHorario"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginLeft="40dp"
+                    android:text="Horario:"
+                    android:textColor="#C5C5C5"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.545" />
+                    app:layout_constraintVertical_bias="0.461" />
+
+                <ImageView
+                    android:id="@+id/imageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:src="@drawable/ic_watch"
+                    app:itemIconTint="@drawable/selector"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/textViewHorario"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/horariotextview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginLeft="12dp"
+                    android:textColor="#C5C5C5"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/textViewHorario"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.461" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <!--
@@ -142,10 +180,9 @@
              -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/descripcionLocal"
-                android:layout_width="328dp"
-                android:layout_height="wrap_content"
+                android:layout_width="357dp"
+                android:layout_height="30dp"
                 android:layout_marginTop="268dp"
-                android:visibility="gone"
                 android:paddingBottom="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.492"
@@ -159,11 +196,54 @@
                     android:textColor="#C1C1C1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.304"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="1.0" />
+                    app:layout_constraintVertical_bias="0.0" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/direcciontv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="4dp"
+                android:text="Dirección:"
+                android:textColor="#C5C5C5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/descripcionLocal" />
+
+            <TextView
+                android:id="@+id/direccionTextCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="23dp"
+                android:layout_marginLeft="23dp"
+                android:textColor="#C1C1C1"
+                app:layout_constraintStart_toEndOf="@+id/direcciontv"
+                app:layout_constraintTop_toTopOf="@+id/direcciontv" />
+
+            <TextView
+                android:id="@+id/rutaBoton"
+                android:layout_width="88dp"
+                android:layout_height="33dp"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/botonruta"
+                android:elevation="100dp"
+                android:padding="2dp"
+                android:text=" Hacer ruta"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="normal|bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/descripcionLocal"
+                app:layout_constraintVertical_bias="1.0" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

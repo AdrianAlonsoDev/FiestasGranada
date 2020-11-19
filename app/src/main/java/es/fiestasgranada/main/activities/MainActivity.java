@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -51,7 +52,9 @@ public class MainActivity extends AppCompatActivity {
 
         progressAnimation();
 
+
     }
+
 
     public void progressAnimation() {
         ProgressBarAnimation anim = new ProgressBarAnimation(this, progressBar, textView, 0, 100);

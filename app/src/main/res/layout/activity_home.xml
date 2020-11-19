@@ -7,36 +7,32 @@
     android:background="@drawable/home"
     tools:context=".activities.HomeActivity">
 
-    <!-- <FrameLayout
-         android:id="@+id/contenedor"
-         android:layout_width="match_parent"
-         android:layout_height="wrap_content"
-         app:layout_constraintBottom_toTopOf="@id/bottom_nav"
-         app:layout_constraintEnd_toEndOf="parent"
-         app:layout_constraintStart_toStartOf="parent"
-         app:layout_constraintTop_toTopOf="parent"
-         android:layout_marginBottom="70dp">
+    <FrameLayout
+        android:id="@+id/map"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-     </FrameLayout>-->
-
-
-    <fragment
-        android:id="@+id/map2"
-        android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:context=".activities.MapaActivity" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:itemBackground="@color/colorPrimary"
+
+        app:itemBackground="@color/colorGrey"
+        app:itemIconSize="64dp"
         app:itemIconTint="@drawable/selector"
-        app:itemTextColor="@drawable/selector"
+
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_navigation" />
 
     <FrameLayout

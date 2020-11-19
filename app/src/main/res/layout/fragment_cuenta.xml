@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="fragments.CuentaFragment"
-    android:background="@drawable/home">
+    android:background="@drawable/home"
+    tools:context="fragments.CuentaFragment">
 
     <TextView
         android:layout_width="wrap_content"

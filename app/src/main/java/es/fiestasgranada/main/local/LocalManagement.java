@@ -10,9 +10,8 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.transition.AutoTransition;
-import androidx.transition.TransitionManager;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -49,6 +48,8 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         //Pone el título y la descripción.
         holder.mTituloView.setText(mValues.get(position).getTitulo());
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
+        holder.Horario.setText(mValues.get(position).getHorario());
+        holder.Direccion.setText(mValues.get(position).getDireccion());
 
 
         //Carga las imágenes mediante URL
@@ -88,12 +89,15 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         public final TextView mDescripccionView;
         public final TextView disponibilidadEvento;
         public final TextView noDisponibilidadEvento;
+        public final TextView Horario;
+        public final TextView Direccion;
         public final ImageView mImagenEvento;
         public final CardView listenerEventoView;
         public Local mItem;
 
         ConstraintLayout expandableView;
         Button botonOfertas;
+        TextView rutaBoton;
         CardView cardView;
 
 
@@ -104,6 +108,12 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             mTituloView = view.findViewById(R.id.tituloLocal);
 
             mDescripccionView = view.findViewById(R.id.descOculta);
+
+            Horario = view.findViewById(R.id.horariotextview);
+
+            Direccion = view.findViewById(R.id.direccionTextCard);
+
+            rutaBoton = view.findViewById(R.id.rutaBoton);
 
             mImagenEvento = view.findViewById(R.id.imagenLocal);
 
@@ -119,7 +129,19 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
             botonOfertas = view.findViewById(R.id.botonOfertas);
 
-            botonOfertas.setOnClickListener(new View.OnClickListener() {
+
+            rutaBoton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    LatLng mDestination = new LatLng(LocalManagement.mValues.get(4).getLatitud(), LocalManagement.mValues.get(4).getLongitud());
+                    // new MapaFragment.TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
+                }
+            });
+
+
+
+
+            /*botonOfertas.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (expandableView.getVisibility() == View.GONE) {
@@ -147,7 +169,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
                         botonOfertas.setBackgroundResource(R.drawable.oferta);
                     }
                 }
-            });
+            });*/
 
 
         }

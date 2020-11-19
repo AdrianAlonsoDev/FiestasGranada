@@ -1,7 +1,6 @@
 package es.fiestasgranada.main.fragments;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -15,10 +14,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -31,19 +28,21 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dash;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PatternItem;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.PlaceLikelihood;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceRequest;
-import com.google.android.libraries.places.api.net.FindCurrentPlaceResponse;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -63,62 +62,53 @@ import java.util.HashMap;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
-import es.fiestasgranada.main.activities.MapaActivity;
 import es.fiestasgranada.main.local.LocalManagement;
 import es.fiestasgranada.main.util.DirectionParser;
 import es.fiestasgranada.main.util.ImageCoverter;
 
 public class MapaFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-    private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
 
-    private static final String TAG = MapaActivity.class.getSimpleName();
     private static final int DEFAULT_ZOOM = 15;
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
+
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
-    public static Context context;
-    // A default location (Sydney, Australia) and default zoom to use when location permission is
+    // A default location (Granada, Spain) and default zoom to use when location permission is
     // not granted.
-    private final LatLng mDefaultLocation = new LatLng(-33.8523341, 151.2106085);
-    ImageCoverter convertidor = new ImageCoverter();
+    private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
+    //Context used to Attach.
+    public static Context context;
+    //Map calls
+    private static GoogleMap mMap;
     ImageView imgmarker;
     ImageView iconM;
-    LinearLayout tapactionlayout;
+    private final LatLng mOrigin = PEDROANTONIO;
     View bottomSheet;
     TextView txtnombre_local, txtDescripcion, txtDireccion;
-    private GoogleMap mMap;
+    //Managers and calls of images
+    ImageCoverter convertidor = new ImageCoverter();
     private CameraPosition mCameraPosition;
+
     // The entry point to the Places API.
     private PlacesClient mPlacesClient;
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
+
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
-    private String[] mLikelyPlaceNames;
-    private String[] mLikelyPlaceAddresses;
-    private List[] mLikelyPlaceAttributions;
-    private LatLng[] mLikelyPlaceLatLngs;
-    private LatLng mOrigin;
+    //Resources
+    LinearLayout tapactionlayout;
     private LatLng mDestination;
     private int id;
-    /**
-     * Sets up the options menu.
-     *
-     * @param menu The options menu.
-     * @return Boolean.
-     * @Override public boolean onCreateOptionsMenu(Menu menu) {
-     * getMenuInflater().inflate(R.menu.current_place_menu, menu);
-     * return true;
-     * }
-     */
+
     private BottomSheetBehavior mBottomSheetBehavior1;
-    private Context mContext;
 
     public MapaFragment() {
         // Required empty public constructor
@@ -136,40 +126,101 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
+    public static String buildRequestUrl(LatLng origin, LatLng destination) {
+        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
+        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
+        String output = "json";
+        String APIKEY = context.getResources().getString(R.string.google_maps_key);
+
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=" + APIKEY;
+        Log.d("TAG", url);
+        return url;
+    }
+
     /**
-     * Handles a click on the menu option to get a place.
+     * Request direction from Google Direction API
      *
-     * @return Boolean.
-     * @Override public boolean onOptionsItemSelected(MenuItem item) {
-     * if (item.getItemId() == R.id.option_get_place) {
-     * showCurrentPlace();
-     * }
-     * return true;
-     * }
+     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
+     * @return JSON data routes/direction
      */
+    private static String requestDirection(String requestedUrl) {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(requestedUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            StringBuffer stringBuffer = new StringBuffer();
+            String line = "";
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        httpURLConnection.disconnect();
+        return responseString;
+    }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public boolean onMarkerClick(Marker marker) {
+        id = (Integer) marker.getTag();
+
+        convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
+        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
+        txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
+        txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
+        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
+        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                new LatLng(LocalManagement.mValues.get(id).getLatitud(),
+                        LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
+
+        /*Glide.with(this)
+                .asBitmap()
+                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
+                .into(new SimpleTarget<Bitmap>(200, 200) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resource));
+                    }
+                });*/
+
+        return false;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_cuenta, container, false);
-    }
+        View view = inflater.inflate(R.layout.fragment_mapa, container, false);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mContext = context;
-    }
+        // Build the map.
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        mapFragment.getMapAsync(this);
         context = getContext();
 
         //Initialize and Assign Variable
@@ -190,14 +241,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         // Construct a FusedLocationProviderClient.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
 
-
-        // Build the map.
-        /*SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);*/
-
-
-        View headerLayout1 = view.findViewById(R.id.bottomJsoft);
         imgmarker = view.findViewById(R.id.ImgMarker);
         iconM = view.findViewById(R.id.iconM);
 
@@ -236,87 +279,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                 }
             }
         });
-
-
-    }
-
-
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        id = (Integer) marker.getTag();
-
-        convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), imgmarker);
-        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
-        txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
-        txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
-        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
-        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                new LatLng(LocalManagement.mValues.get(id).getLatitud(),
-                        LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
-
-
-
-        /*Glide.with(this)
-                .asBitmap()
-                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
-                .into(new SimpleTarget<Bitmap>(200, 200) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resource));
-                    }
-                });*/
-
-        return false;
-    }
-
-    @Override
-    public void onMapReady(GoogleMap map) {
-        mMap = map;
-        try {
-            Thread.sleep(400);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < LocalManagement.mValues.size(); i++) {
-            final int finalI = i;
-
-            //Usa glide para descargar la imagen y convertirla en Bitmap (resource) para que pueda sustituir al Maker
-            //por defecto de Google
-            Glide.with(this)
-                    .asBitmap()
-                    .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
-                    .into(new SimpleTarget<Bitmap>(180, 180) {
-                        @Override
-                        public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
-                            final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
-                                    .title(LocalManagement.mValues.get(finalI).getTitulo())
-                                    .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
-                            marcador.setTag(finalI);
-                        }
-                    });
-        }
-
-        //LISTENER
-        mMap.setOnMarkerClickListener(this);
-
-        //MAKE ROUTES
-        //  Show marker on the screen and adjust the zoom level
-        //  mMap.addMarker(new MarkerOptions().position(mOrigin).title("Origin"));
-        //  mMap.addMarker(new MarkerOptions().position(mDestination).title("Destination"));
-        //  new TaskDirectionRequest().execute(buildRequestUrl(mOrigin,mDestination));
-
-        // Prompt the user for permission.
-        getLocationPermission();
-
-        // Turn on the My Location layer and the related control on the map.
-        updateLocationUI();
-
-        // Get the current location of the device and set the position of the map.
-        getDeviceLocation();
-
-
+        return view;
     }
 
     /**
@@ -359,157 +322,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         updateLocationUI();
     }
 
-    /**
-     * Prompts the user to select the current place from a list of likely places, and shows the
-     * current place on the map - provided the user has granted location permission.
-     */
-    private void showCurrentPlace() {
-        if (mMap == null) {
-            return;
-        }
-
-        if (mLocationPermissionGranted) {
-            // Use fields to define the data types to return.
-            List<Place.Field> placeFields = Arrays.asList(Place.Field.NAME, Place.Field.ADDRESS,
-                    Place.Field.LAT_LNG);
-
-            // Use the builder to create a FindCurrentPlaceRequest.
-            FindCurrentPlaceRequest request =
-                    FindCurrentPlaceRequest.newInstance(placeFields);
-
-            // Get the likely places - that is, the businesses and other points of interest that
-            // are the best match for the device's current location.
-            @SuppressWarnings("MissingPermission") final Task<FindCurrentPlaceResponse> placeResult =
-                    mPlacesClient.findCurrentPlace(request);
-            placeResult.addOnCompleteListener(new OnCompleteListener<FindCurrentPlaceResponse>() {
-                @Override
-                public void onComplete(@NonNull Task<FindCurrentPlaceResponse> task) {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        FindCurrentPlaceResponse likelyPlaces = task.getResult();
-
-                        // Set the count, handling cases where less than 5 entries are returned.
-                        int count;
-                        if (likelyPlaces.getPlaceLikelihoods().size() < M_MAX_ENTRIES) {
-                            count = likelyPlaces.getPlaceLikelihoods().size();
-                        } else {
-                            count = M_MAX_ENTRIES;
-                        }
-
-                        int i = 0;
-                        mLikelyPlaceNames = new String[count];
-                        mLikelyPlaceAddresses = new String[count];
-                        mLikelyPlaceAttributions = new List[count];
-                        mLikelyPlaceLatLngs = new LatLng[count];
-
-                        for (PlaceLikelihood placeLikelihood : likelyPlaces.getPlaceLikelihoods()) {
-                            // Build a list of likely places to show the user.
-                            mLikelyPlaceNames[i] = placeLikelihood.getPlace().getName();
-                            mLikelyPlaceAddresses[i] = placeLikelihood.getPlace().getAddress();
-                            mLikelyPlaceAttributions[i] = placeLikelihood.getPlace()
-                                    .getAttributions();
-                            mLikelyPlaceLatLngs[i] = placeLikelihood.getPlace().getLatLng();
-
-                            i++;
-                            if (i > (count - 1)) {
-                                break;
-                            }
-                        }
-
-                        // Show a dialog offering the user the list of likely places, and add a
-                        // marker at the selected place.
-                    } else {
-                        Log.e(TAG, "Exception: %s", task.getException());
-                    }
-                }
-            });
-        } else {
-            // The user has not granted permission.
-            Log.i(TAG, "The user did not grant location permission.");
-
-            // Add a default marker, because the user hasn't selected a place.
-            /**
-             mMap.addMarker(new MarkerOptions()
-             .title(getString(R.string.default_info_title))
-             .position(mDefaultLocation)
-             .snippet(getString(R.string.default_info_snippet)));**/
-
-            // Prompt the user for permission.
-            getLocationPermission();
-        }
-    }
-
-
-    /**
-     * Displays a form allowing the user to select a place from a list of likely places.
-     */
-    private void openPlacesDialog() {
-        // Ask the user to choose the place where they are now.
-        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // The "which" argument contains the position of the selected item.
-                LatLng markerLatLng = mLikelyPlaceLatLngs[which];
-                String markerSnippet = mLikelyPlaceAddresses[which];
-                if (mLikelyPlaceAttributions[which] != null) {
-                    markerSnippet = markerSnippet + "\n" + mLikelyPlaceAttributions[which];
-                }
-
-                // Add a marker for the selected place, with an info window
-                // showing information about that place.
-                mMap.addMarker(new MarkerOptions()
-                        .title(mLikelyPlaceNames[which])
-                        .position(markerLatLng)
-                        .snippet(markerSnippet));
-
-                // Position the map's camera at the location of the marker.
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerLatLng,
-                        DEFAULT_ZOOM));
-            }
-        };
-
-        // Display the dialog.
-        /**
-         AlertDialog dialog = new AlertDialog.Builder(this)
-         .setTitle(R.string.pick_place)
-         .setItems(mLikelyPlaceNames, listener)
-         .show();*/
-    }
-
-    /**
-     * Gets the current location of the device, and positions the map's camera.
-     */
-    private void getDeviceLocation() {
-        /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
-         */
-        try {
-            if (mLocationPermissionGranted) {
-                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Location> task) {
-                        if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
-                            mLastKnownLocation = task.getResult();
-                            if (mLastKnownLocation != null) {
-                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                        new LatLng(mLastKnownLocation.getLatitude(),
-                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                            }
-                        } else {
-                            Log.d(TAG, "Current location is null. Using defaults.");
-                            Log.e(TAG, "Exception: %s", task.getException());
-                            mMap.moveCamera(CameraUpdateFactory
-                                    .newLatLngZoom(PEDROANTONIO, DEFAULT_ZOOM));
-                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                        }
-                    }
-                });
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     /**
@@ -536,6 +351,73 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         }
     }
 
+    @Override
+    public void onMapReady(GoogleMap map) {
+        mMap = map;
+
+        MapStyleOptions mapStyleOptions = MapStyleOptions.loadRawResourceStyle(getContext(), R.raw.map_style);
+        map.setMapStyle(mapStyleOptions);
+        //JUST IN CASE IT CRASHES
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+
+                    for (int i = 0; i < LocalManagement.mValues.size(); i++) {
+                        final int finalI = i;
+
+                        //Usa glide para descargar la imagen y convertirla en Bitmap (resource) para que pueda sustituir al Maker
+                        //por defecto de Google
+                        Glide.with(getContext())
+                                .asBitmap()
+                                .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
+                                .into(new SimpleTarget<Bitmap>(180, 180) {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                        final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
+                                                .title(LocalManagement.mValues.get(finalI).getTitulo())
+                                                .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
+                                        marcador.setTag(finalI);
+                                    }
+                                });
+                    }
+
+                } catch (Exception ignored) {
+
+                }
+            }
+        }).start();
+        //LISTENER
+        mMap.setOnMarkerClickListener(this);
+
+        //MAKE ROUTES
+        //  Show marker on the screen and adjust the zoom level
+
+        mDestination = new LatLng(LocalManagement.mValues.get(4).getLatitud(), LocalManagement.mValues.get(4).getLongitud());
+
+        // mMap.addMarker(new MarkerOptions().position(mOrigin).title("Origin"));
+
+        //mMap.addMarker(new MarkerOptions().position(mDestination).title("Destination"));
+
+        //new TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
+
+
+        // Prompt the user for permission.
+        getLocationPermission();
+
+        // Turn on the My Location layer and the related control on the map.
+        updateLocationUI();
+
+        // Get the current location of the device and set the position of the map.
+        getDeviceLocation();
+
+
+    }
     /**
      * Create requested url for Direction API to get routes from origin to destination
      *
@@ -543,65 +425,91 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
      * @param destination
      * @return
      */
-    private String buildRequestUrl(LatLng origin, LatLng destination) {
-        String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
-        String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
-        String sensor = "sensor=false";
-        String mode = "mode=driving";
-
-        String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
-        String output = "json";
-        String APIKEY = getResources().getString(R.string.google_maps_key);
-
-        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + param + "&key=" + APIKEY;
-        Log.d("TAG", url);
-        return url;
-    }
 
     /**
-     * Request direction from Google Direction API
-     *
-     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
-     * @return JSON data routes/direction
+     * Gets the current location of the device, and positions the map's camera.
      */
-    private String requestDirection(String requestedUrl) {
-        String responseString = "";
-        InputStream inputStream = null;
-        HttpURLConnection httpURLConnection = null;
+    private void getDeviceLocation() {
+        /*
+         * Get the best and most recent location of the device, which may be null in rare
+         * cases when a location is not available.
+         */
         try {
-            URL url = new URL(requestedUrl);
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
-
-            inputStream = httpURLConnection.getInputStream();
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-
-            StringBuffer stringBuffer = new StringBuffer();
-            String line = "";
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuffer.append(line);
+            if (mLocationPermissionGranted) {
+                Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful()) {
+                            // Set the map's camera position to the current location of the device.
+                            mLastKnownLocation = task.getResult();
+                            if (mLastKnownLocation != null) {
+                                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                        new LatLng(mLastKnownLocation.getLatitude(),
+                                                mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            }
+                        } else {
+                            // Log.d(TAG, "Current location is null. Using defaults.");
+                            //Log.e(TAG, "Exception: %s", task.getException());
+                            mMap.moveCamera(CameraUpdateFactory
+                                    .newLatLngZoom(PEDROANTONIO, DEFAULT_ZOOM));
+                            mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                        }
+                    }
+                });
             }
-            responseString = stringBuffer.toString();
-            bufferedReader.close();
-            reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
         }
-        httpURLConnection.disconnect();
-        return responseString;
+    }
+
+    @Override
+    public void onStart() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        super.onStart();
+        f.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        super.onResume();
+        f.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        super.onPause();
+        f.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        super.onStop();
+        f.onStop();
+    }
+
+    @Override
+    public void onLowMemory() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        super.onLowMemory();
+        f.onLowMemory();
+    }
+
+    @Override
+    public void onDestroyView() {
+        Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+        if (f != null)
+            getChildFragmentManager().beginTransaction()
+                    .remove(f).commitAllowingStateLoss();
+
+        super.onDestroyView();
     }
 
     //Get JSON data from Google Direction
-    public class TaskDirectionRequest extends AsyncTask<String, Void, String> {
+    public static class TaskDirectionRequest extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... strings) {
             String responseString = "";
@@ -617,13 +525,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         protected void onPostExecute(String responseString) {
             super.onPostExecute(responseString);
             //Json object parsing
-            MapaFragment.TaskParseDirection parseResult = new MapaFragment.TaskParseDirection();
+            TaskParseDirection parseResult = new TaskParseDirection();
             parseResult.execute(responseString);
         }
     }
 
     //Parse JSON Object from Google Direction API & display it on Map
-    public class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+    public static class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
             List<List<HashMap<String, String>>> routes = null;
@@ -639,8 +547,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             return routes;
         }
 
+        public static final int PATTERN_DASH_LENGTH_PX = 20;
+        public static final int PATTERN_GAP_LENGTH_PX = 10;
+        public final PatternItem DOT = new Dot();
+        public final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
+        public final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
+        public final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(DOT, GAP);
+
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+
             super.onPostExecute(lists);
             ArrayList points = null;
             PolylineOptions polylineOptions = null;
@@ -656,14 +572,15 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     points.add(new LatLng(lat, lon));
                 }
                 polylineOptions.addAll(points);
-                polylineOptions.width(15f);
-                polylineOptions.color(Color.BLUE);
+                polylineOptions.width(14f);
+                polylineOptions.color(Color.argb(190, 100, 0, 0));
                 polylineOptions.geodesic(true);
+                polylineOptions.pattern(PATTERN_POLYGON_ALPHA);
             }
             if (polylineOptions != null) {
                 mMap.addPolyline(polylineOptions);
             } else {
-                Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
+                //Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
             }
         }
     }

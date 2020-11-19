@@ -14,11 +14,13 @@ public class Local {
     private String URLImagen;
     private String URLIcono;
     private String abierto;
+    private String direccion;
+    private String horario;
 
 
     //constructores
 
-    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto) {
+    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, String direccion, String horario) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -28,6 +30,8 @@ public class Local {
         this.latitud = latitud;
         this.longitud = longitud;
         this.abierto = abierto;
+        this.direccion = direccion;
+        this.horario = horario;
 
     }
 
@@ -106,17 +110,19 @@ public class Local {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "Local{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", fecha=" + fecha +
-                ", URLImagen='" + URLImagen + '\'' +
-                ", latitud=" + latitud +
-                ", longitud=" + longitud +
-                ", abierto=" + abierto +
-                '}';
+    public String getHorario() {
+        return horario;
+    }
+
+    public void setHorario(String horario) {
+        this.horario = horario;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }
