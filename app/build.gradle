@@ -18,10 +18,9 @@ android {
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0"
+        versionName "0.0.20"
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        applicationIdSuffix 'FG'
         signingConfig signingConfigs.debug
         resConfigs "en"
     }
@@ -36,15 +35,14 @@ android {
             minifyEnabled true
             shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            versionNameSuffix 'Release'
-            applicationIdSuffix 'FiestasGranada'
+            versionNameSuffix 'release'
             signingConfig signingConfigs.release
             matchingFallbacks = ['release']
         }
         debug {
             manifestPlaceholders GOOGLE_MAPS_API_KEY: GOOGLE_MAPS_API_KEY
-            applicationIdSuffix 'FiestasGranada'
-            versionNameSuffix 'Debug'
+            applicationIdSuffix 'debug'
+            versionNameSuffix 'debug'
             jniDebuggable true
             renderscriptDebuggable true
             signingConfig signingConfigs.debug
