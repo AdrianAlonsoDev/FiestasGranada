@@ -31,10 +31,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".activities.MapaActivity"
-            android:label="@string/title_activity_mapa_generado" />
-        <activity android:name=".activities.CuentaActivity" />
         <activity android:name=".activities.HomeActivity" />
         <activity android:name=".activities.MainActivity">
             <intent-filter>

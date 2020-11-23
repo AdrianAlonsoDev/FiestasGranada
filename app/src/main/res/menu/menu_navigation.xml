@@ -3,17 +3,19 @@
 
     <item
         android:id="@+id/home"
-        android:title="Menu principal"
-        android:icon="@drawable/ic_dashboard" />
 
+        android:icon="@drawable/ic_bar_on"
+        android:state_selected="true"
+        android:title="Menu" />
     <item
         android:id="@+id/mapa"
-        android:icon="@drawable/ic_map"
+        android:icon="@drawable/ic_sel_map"
         android:title="Mapa" />
 
     <item
         android:id="@+id/cuenta"
-        android:title="Cuenta"
-        android:icon="@drawable/ic_account" />
+        android:icon="@drawable/ic_sel_acc"
+        android:title="Cuenta" />
+
 
 </menu>

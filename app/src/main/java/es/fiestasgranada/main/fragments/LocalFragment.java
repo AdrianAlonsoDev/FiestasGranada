@@ -1,4 +1,4 @@
-package es.fiestasgranada.main.local;
+package es.fiestasgranada.main.fragments;
 
 import android.content.Context;
 import android.os.AsyncTask;
@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,7 +24,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.activities.HomeActivity;
 import es.fiestasgranada.main.listeners.LocalListener;
+import es.fiestasgranada.main.local.Local;
+import es.fiestasgranada.main.local.LocalManagement;
 
 
 /**
@@ -34,18 +39,18 @@ import es.fiestasgranada.main.listeners.LocalListener;
 public class LocalFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-
+    public static final List<Local> listado = new ArrayList<>();
+    private static final String URL_API = "https://michiochi.synology.me/api.php";
+    private Context context = null;
     private int mColumnCount = 1;
     private LocalListener mListener;
-    static private final List<Local> listado = new ArrayList<>();
-    private static Context context = null;
-    private static final String URL_API = "https://michiochi.synology.me/api.php";
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
     public LocalFragment() {
+
     }
 
     // TODO: Customize parameter initialization
@@ -55,13 +60,13 @@ public class LocalFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -71,40 +76,54 @@ public class LocalFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_local_list, container, false);
 
         // Set the adapter
-        // Context context = view.getContext();
-        context = getActivity();
-        RecyclerView recyclerView = (RecyclerView) view;
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        context = getContext();
 
 
-        listado.clear();
+        //  View drawer = inflater.inflate(R.layout.fragment_local_list, container, false);
 
-        new DownloadJSON().execute();
-        try {
-            Thread.sleep(500);
+        //RecyclerView recyclerView = (RecyclerView) view;
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listCardList);
+
+        if (mColumnCount <= 1) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+        }
+
+
+        /*try {
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
+
         recyclerView.setAdapter(new LocalManagement(listado, mListener));
         return view;
 
     }
 
-    static class DownloadJSON extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
+    @Override
+    public void onAttach(Context context) {//en el contexto recibe el activity home
+        super.onAttach(context);
+        if (context instanceof LocalListener) {
+            mListener = (LocalListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnListFragmentInteractionListener");
         }
+    }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
+    public static class DownloadJSON extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... voids) {
@@ -129,33 +148,22 @@ public class LocalFragment extends Fragment {
                                 obj.getString("URLIcono"),
                                 obj.getDouble("latitud"),
                                 obj.getDouble("longitud"),
-                                obj.getString("abierto")));
-
+                                obj.getString("abierto"),
+                                obj.getString("direccion"),
+                                obj.getString("horario")));
                     }
                 }
             } catch (Exception e) {
 
-                //Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(HomeActivity.context, e.toString(), Toast.LENGTH_LONG).show();
             }
             return null;
         }
-    }
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
 
-    @Override
-    public void onAttach(Context context) {//en el contexto recibe el activity home
-        super.onAttach(context);
-        if (context instanceof LocalListener) {
-            mListener = (LocalListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
         }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
     }
 }

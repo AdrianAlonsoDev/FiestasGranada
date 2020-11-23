@@ -1,4 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="text_margin">16dp</dimen>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="design_bottom_navigation_height" tools:override="true">66dp</dimen>
+    <dimen name="design_bottom_navigation_text_size" tools:override="true">14sp</dimen>
+    <dimen name="design_bottom_navigation_shadow_height" tools:override="true">15dp</dimen>
+
 </resources>

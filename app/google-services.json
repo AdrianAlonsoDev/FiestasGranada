@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "447496362635",
+    "firebase_url": "https://fiestasgranada-000.firebaseio.com",
+    "project_id": "fiestasgranada-000",
+    "storage_bucket": "fiestasgranada-000.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447496362635:android:1c8e7895cd20a5912c528e",
+        "android_client_info": {
+          "package_name": "es.fiestasgranada.main"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447496362635-7n0g0drjedlsuahssoarpif9uoddfd3m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.fiestasgranada.main",
+            "certificate_hash": "220e884d3c97e4e59007e9f6b082d1dffc024b6b"
+          }
+        },
+        {
+          "client_id": "447496362635-ru3jomb0acb7b3bb5lj0iflinpgu8o61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzd-sY8f405TEH06444x0xNR2Se5nBw1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447496362635-ru3jomb0acb7b3bb5lj0iflinpgu8o61.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447496362635:android:a57652b0ade9baae2c528e",
+        "android_client_info": {
+          "package_name": "es.fiestasgranada.main.FG.FiestasGranada"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447496362635-qsu7hj5dt31h7qmdt7ot1iqkefplk1o7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "es.fiestasgranada.main.FG.FiestasGranada",
+            "certificate_hash": "220e884d3c97e4e59007e9f6b082d1dffc024b6b"
+          }
+        },
+        {
+          "client_id": "447496362635-ru3jomb0acb7b3bb5lj0iflinpgu8o61.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBzd-sY8f405TEH06444x0xNR2Se5nBw1A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "447496362635-ru3jomb0acb7b3bb5lj0iflinpgu8o61.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

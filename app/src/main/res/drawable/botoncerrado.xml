@@ -1,10 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:endColor="#630404"
-        android:gradientRadius="200"
-        android:startColor="#DF1515"
-        android:type="linear" />
-    <corners android:radius="5dp" />
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_enabled="true" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#A6242842"></solid>
+            <corners android:radius="10dp"></corners>
+            <stroke android:width="1dp" android:color="#D12626"></stroke>
+        </shape>
+    </item>
 
-</shape>
+    <item android:state_enabled="true">
+        <shape android:shape="rectangle">
+            <solid android:color="#A6242842"></solid>
+            <corners android:radius="10dp"></corners>
+            <stroke android:width="1dp" android:color="#D12626"></stroke>
+        </shape>
+    </item>
+</selector>
