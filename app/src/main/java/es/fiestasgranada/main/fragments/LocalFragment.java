@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.activities.HomeActivity;
 import es.fiestasgranada.main.listeners.LocalListener;
 import es.fiestasgranada.main.local.Local;
 import es.fiestasgranada.main.local.LocalManagement;
@@ -37,9 +39,9 @@ import es.fiestasgranada.main.local.LocalManagement;
 public class LocalFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
-    static private final List<Local> listado = new ArrayList<>();
+    public static final List<Local> listado = new ArrayList<>();
     private static final String URL_API = "https://michiochi.synology.me/api.php";
-    private static Context context = null;
+    private Context context = null;
     private int mColumnCount = 1;
     private LocalListener mListener;
 
@@ -48,6 +50,7 @@ public class LocalFragment extends Fragment {
      * fragment (e.g. upon screen orientation changes).
      */
     public LocalFragment() {
+
     }
 
     // TODO: Customize parameter initialization
@@ -57,45 +60,47 @@ public class LocalFragment extends Fragment {
         Bundle args = new Bundle();
         args.putInt(ARG_COLUMN_COUNT, columnCount);
         fragment.setArguments(args);
+
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_local_list, container, false);
 
         // Set the adapter
-        // Context context = view.getContext();
-        context = getActivity();
-        RecyclerView recyclerView = (RecyclerView) view;
+        context = getContext();
+
+
+        //  View drawer = inflater.inflate(R.layout.fragment_local_list, container, false);
+
+        //RecyclerView recyclerView = (RecyclerView) view;
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listCardList);
+
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
 
-        listado.clear();
-
-        new DownloadJSON().execute();
-        try {
-            Thread.sleep(500);
+        /*try {
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
+        }*/
+
         recyclerView.setAdapter(new LocalManagement(listado, mListener));
         return view;
 
@@ -118,18 +123,7 @@ public class LocalFragment extends Fragment {
         mListener = null;
     }
 
-    static class DownloadJSON extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
+    public static class DownloadJSON extends AsyncTask<Void, Void, String> {
 
         @Override
         protected String doInBackground(Void... voids) {
@@ -157,14 +151,19 @@ public class LocalFragment extends Fragment {
                                 obj.getString("abierto"),
                                 obj.getString("direccion"),
                                 obj.getString("horario")));
-
                     }
                 }
             } catch (Exception e) {
 
-                //Toast.makeText(context, e.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(HomeActivity.context, e.toString(), Toast.LENGTH_LONG).show();
             }
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
         }
     }
 }

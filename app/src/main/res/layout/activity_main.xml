@@ -11,22 +11,6 @@
 
 
     <ImageView
-        android:id="@+id/fiestasGranada"
-        android:layout_width="134dp"
-        android:layout_height="84dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="8dp"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toTopOf="@+id/cargatexto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/fiestasgranadaicono" />
-
-    <ImageView
         android:id="@+id/fiestasGranadaIcon"
         android:layout_width="307dp"
         android:layout_height="125dp"
@@ -34,25 +18,29 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="480dp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toTopOf="@+id/fiestasGranada"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/fiestasgranada" />
 
-    <TextView
-        android:id="@+id/cargatexto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/cargabarra"
-        android:layout_centerHorizontal="true"
-        android:text="0 %"
-        android:textColor="#fff"
-        android:textSize="25sp"
-        app:layout_constraintBottom_toTopOf="@+id/cargabarra"
+    <ImageView
+        android:id="@+id/fiestasGranada"
+        android:layout_width="134dp"
+        android:layout_height="84dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="44dp"
+        android:scaleType="centerInside"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/fiestasgranadaicono" />
 
     <ProgressBar
         android:id="@+id/cargabarra"
@@ -60,8 +48,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_marginBottom="136dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="16dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <FrameLayout
         android:id="@+id/dummy_map_view"

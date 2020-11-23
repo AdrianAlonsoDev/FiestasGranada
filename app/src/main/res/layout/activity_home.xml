@@ -10,7 +10,6 @@
     <FrameLayout
         android:id="@+id/map"
         android:name="androidx.navigation.fragment.NavHostFragment"
-        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"

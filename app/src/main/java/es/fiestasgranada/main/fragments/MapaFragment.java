@@ -76,6 +76,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
 
+    public static boolean routaNecesitada = false;
+
     // Used for selecting the current place.
     private static final int M_MAX_ENTRIES = 5;
     // A default location (Granada, Spain) and default zoom to use when location permission is
@@ -106,6 +108,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     //Resources
     LinearLayout tapactionlayout;
     private LatLng mDestination;
+    public static int idDest = 0;
     private int id;
 
     private BottomSheetBehavior mBottomSheetBehavior1;
@@ -359,7 +362,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         map.setMapStyle(mapStyleOptions);
         //JUST IN CASE IT CRASHES
         try {
-            Thread.sleep(300);
+            Thread.sleep(600);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -396,17 +399,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         mMap.setOnMarkerClickListener(this);
 
         //MAKE ROUTES
-        //  Show marker on the screen and adjust the zoom level
-
-        mDestination = new LatLng(LocalManagement.mValues.get(4).getLatitud(), LocalManagement.mValues.get(4).getLongitud());
-
-        // mMap.addMarker(new MarkerOptions().position(mOrigin).title("Origin"));
-
-        //mMap.addMarker(new MarkerOptions().position(mDestination).title("Destination"));
-
         //new TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
 
-
+        if (routaNecesitada = true) {
+            LatLng destino = new LatLng(LocalManagement.mValues.get(idDest).getLatitud(), LocalManagement.mValues.get(idDest).getLongitud());
+            hacerRuta(mOrigin, destino);
+            routaNecesitada = false;
+        }
         // Prompt the user for permission.
         getLocationPermission();
 
@@ -418,13 +417,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     }
-    /**
-     * Create requested url for Direction API to get routes from origin to destination
-     *
-     * @param origin
-     * @param destination
-     * @return
-     */
+
+    public void hacerRuta(LatLng origin, LatLng destination) {
+
+        new TaskDirectionRequest().execute(buildRequestUrl(origin, destination));
+    }
 
     /**
      * Gets the current location of the device, and positions the map's camera.
@@ -501,6 +498,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     @Override
     public void onDestroyView() {
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
+
         if (f != null)
             getChildFragmentManager().beginTransaction()
                     .remove(f).commitAllowingStateLoss();
@@ -570,12 +568,14 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     double lon = Double.parseDouble(point.get("lng"));
 
                     points.add(new LatLng(lat, lon));
+
                 }
                 polylineOptions.addAll(points);
                 polylineOptions.width(14f);
-                polylineOptions.color(Color.argb(190, 100, 0, 0));
+                polylineOptions.color(Color.argb(240, 100, 0, 0));
                 polylineOptions.geodesic(true);
                 polylineOptions.pattern(PATTERN_POLYGON_ALPHA);
+
             }
             if (polylineOptions != null) {
                 mMap.addPolyline(polylineOptions);

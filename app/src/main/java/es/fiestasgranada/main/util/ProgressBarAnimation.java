@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import es.fiestasgranada.main.activities.HomeActivity;
 
@@ -13,14 +12,12 @@ public class ProgressBarAnimation extends Animation {
 
     private final Context context;
     private final ProgressBar progressBar;
-    private final TextView textView;
     private final float from;
     private final float to;
 
-    public ProgressBarAnimation(Context context, ProgressBar progressBar, TextView textView, float from, float to) {
+    public ProgressBarAnimation(Context context, ProgressBar progressBar, float from, float to) {
         this.context = context;
         this.progressBar = progressBar;
-        this.textView = textView;
         this.from = from;
         this.to = to;
     }
@@ -30,7 +27,6 @@ public class ProgressBarAnimation extends Animation {
         super.applyTransformation(interpolatedTime, t);
         float value = from + (to - from) * interpolatedTime;
         progressBar.setProgress((int) value);
-        textView.setText((int) value + " %");
 
         if (value == to) {
             context.startActivity(new Intent(context, HomeActivity.class));

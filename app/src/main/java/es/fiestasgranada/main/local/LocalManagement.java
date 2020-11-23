@@ -1,22 +1,23 @@
 package es.fiestasgranada.main.local;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.model.LatLng;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.fragments.MapaFragment;
 import es.fiestasgranada.main.listeners.LocalListener;
 
 
@@ -24,6 +25,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
     public static List<Local> mValues;
     private final LocalListener mListener;
+    private Context context;
 
 
     public LocalManagement(List<Local> listado, LocalListener listener) {
@@ -35,13 +37,13 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_local, parent, false);
+        context = parent.getContext();
 
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
-
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         holder.mItem = mValues.get(position);
 
@@ -50,6 +52,28 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         holder.mDescripccionView.setText(mValues.get(position).getDescripcion());
         holder.Horario.setText(mValues.get(position).getHorario());
         holder.Direccion.setText(mValues.get(position).getDireccion());
+        holder.rutaBoton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // new MapaFragment.TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
+                MapaFragment.routaNecesitada = true;
+                MapaFragment.idDest = mValues.get(position).getId();
+
+                AppCompatActivity activity = (AppCompatActivity) context;
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.cuentaFragment, new MapaFragment()).commit();
+                try {
+                    Thread.sleep(700);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                // Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
         //Carga las imágenes mediante URL
@@ -65,7 +89,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             holder.disponibilidadEvento.setVisibility(View.GONE);
         }
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+       /* holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
@@ -74,7 +98,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
                     mListener.onClickLocal(holder.mItem);
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -96,12 +120,11 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         public Local mItem;
 
         ConstraintLayout expandableView;
-        Button botonOfertas;
         TextView rutaBoton;
         CardView cardView;
 
 
-        public ViewHolder(View view) {
+        public ViewHolder(final View view) {
             super(view);
             mView = view;
 
@@ -123,54 +146,9 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
 
             expandableView = view.findViewById(R.id.descripcionLocal);
 
-            cardView = view.findViewById(R.id.cardView);
+            cardView = view.findViewById(R.id.cardView3);
 
-            listenerEventoView = view.findViewById(R.id.cardView);
-
-            botonOfertas = view.findViewById(R.id.botonOfertas);
-
-
-            rutaBoton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LatLng mDestination = new LatLng(LocalManagement.mValues.get(4).getLatitud(), LocalManagement.mValues.get(4).getLongitud());
-                    // new MapaFragment.TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
-                }
-            });
-
-
-
-
-            /*botonOfertas.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (expandableView.getVisibility() == View.GONE) {
-                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
-                        expandableView.setVisibility(View.VISIBLE);
-                        botonOfertas.setBackgroundResource(R.drawable.oferta);
-                    } else {
-                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
-                        expandableView.setVisibility(View.GONE);
-                        botonOfertas.setBackgroundResource(R.drawable.oferta);
-                    }
-                }
-            });
-
-            listenerEventoView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (expandableView.getVisibility() == View.GONE) {
-                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
-                        expandableView.setVisibility(View.VISIBLE);
-                        botonOfertas.setBackgroundResource(R.drawable.oferta);
-                    } else {
-                        TransitionManager.beginDelayedTransition(cardView, new AutoTransition());
-                        expandableView.setVisibility(View.GONE);
-                        botonOfertas.setBackgroundResource(R.drawable.oferta);
-                    }
-                }
-            });*/
-
+            listenerEventoView = view.findViewById(R.id.cardView3);
 
         }
 

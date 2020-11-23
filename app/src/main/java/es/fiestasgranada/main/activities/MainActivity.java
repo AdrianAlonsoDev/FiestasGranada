@@ -1,37 +1,29 @@
 package es.fiestasgranada.main.activities;
 
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.databinding.ActivityMainBinding;
+import es.fiestasgranada.main.fragments.LocalFragment;
 import es.fiestasgranada.main.util.ProgressBarAnimation;
 
 public class MainActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
-    TextView textView;
+    private ActivityMainBinding binding;
 
 
     @Override
     protected void onStart() {
         super.onStart();
+        LocalFragment.listado.clear();
+        new LocalFragment.DownloadJSON().execute();
 
-        setContentView(R.layout.activity_main);
-
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
-        progressBar = findViewById(R.id.cargabarra);
-        textView = findViewById(R.id.cargatexto);
-
-        progressBar.setMax(100);
-        progressBar.setScaleY(3f);
-
-        progressAnimation();
     }
 
     @Override
@@ -39,13 +31,14 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
+        setContentView(view);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        progressBar = findViewById(R.id.cargabarra);
-        textView = findViewById(R.id.cargatexto);
+        progressBar = view.findViewById(R.id.cargabarra);
 
         progressBar.setMax(100);
         progressBar.setScaleY(3f);
@@ -53,11 +46,12 @@ public class MainActivity extends AppCompatActivity {
         progressAnimation();
 
 
+
     }
 
 
     public void progressAnimation() {
-        ProgressBarAnimation anim = new ProgressBarAnimation(this, progressBar, textView, 0, 100);
+        ProgressBarAnimation anim = new ProgressBarAnimation(this, progressBar, 0, 100);
         //default 2000, debug 7500
         anim.setDuration(1000);
         progressBar.setAnimation(anim);
