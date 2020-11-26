@@ -24,13 +24,11 @@ import es.fiestasgranada.main.listeners.LocalListener;
 public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHolder> {
 
     public static List<Local> mValues;
-    private final LocalListener mListener;
     private Context context;
 
 
     public LocalManagement(List<Local> listado, LocalListener listener) {
         mValues = listado;
-        mListener = listener;
     }
 
     @Override
@@ -60,17 +58,9 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
                 MapaFragment.idDest = mValues.get(position).getId();
 
                 AppCompatActivity activity = (AppCompatActivity) context;
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.cuentaFragment, new MapaFragment()).commit();
-                try {
-                    Thread.sleep(700);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
                 // Toast.makeText(context, "Click", Toast.LENGTH_SHORT).show();
             }
         });
@@ -106,7 +96,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
         public final View mView;
         public final TextView mTituloView;
@@ -116,7 +106,6 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
         public final TextView Horario;
         public final TextView Direccion;
         public final ImageView mImagenEvento;
-        public final CardView listenerEventoView;
         public Local mItem;
 
         ConstraintLayout expandableView;
@@ -147,8 +136,6 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
             expandableView = view.findViewById(R.id.descripcionLocal);
 
             cardView = view.findViewById(R.id.cardView3);
-
-            listenerEventoView = view.findViewById(R.id.cardView3);
 
         }
 

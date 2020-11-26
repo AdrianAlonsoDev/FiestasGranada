@@ -15,7 +15,6 @@ import es.fiestasgranada.main.util.ProgressBarAnimation;
 public class MainActivity extends AppCompatActivity {
 
     ProgressBar progressBar;
-    private ActivityMainBinding binding;
 
 
     @Override
@@ -31,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        ActivityMainBinding binding = ActivityMainBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 

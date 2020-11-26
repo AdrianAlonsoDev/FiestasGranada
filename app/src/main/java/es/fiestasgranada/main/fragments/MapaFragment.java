@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,11 +17,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,6 +50,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,6 +66,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
+import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
+import es.fiestasgranada.main.databinding.FragmentMapaBinding;
 import es.fiestasgranada.main.local.LocalManagement;
 import es.fiestasgranada.main.util.DirectionParser;
 import es.fiestasgranada.main.util.ImageCoverter;
@@ -94,7 +100,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     TextView txtnombre_local, txtDescripcion, txtDireccion;
     //Managers and calls of images
     ImageCoverter convertidor = new ImageCoverter();
-    private CameraPosition mCameraPosition;
 
     // The entry point to the Places API.
     private PlacesClient mPlacesClient;
@@ -163,7 +168,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             InputStreamReader reader = new InputStreamReader(inputStream);
             BufferedReader bufferedReader = new BufferedReader(reader);
 
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuffer = new StringBuilder();
             String line = "";
             while ((line = bufferedReader.readLine()) != null) {
                 stringBuffer.append(line);
@@ -194,7 +199,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
         txtnombre_local.setText(LocalManagement.mValues.get(id).getTitulo());
         txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
-        txtDireccion.setText(LocalManagement.mValues.get(id).getFecha());
+        txtDireccion.setText(LocalManagement.mValues.get(id).getUltimaFecha());
         mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
@@ -218,21 +223,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_mapa, container, false);
-
+        View view;
+        FragmentMapaBinding binding = FragmentMapaBinding.inflate(inflater, container, false);
+        view = binding.getRoot();
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
         context = getContext();
 
-        //Initialize and Assign Variable
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_nav);
-
         // Retrieve location and camera position from saved instance state.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
-            mCameraPosition = savedInstanceState.getParcelable(KEY_CAMERA_POSITION);
         }
 
         // Retrieve the content view that renders the map.
@@ -255,7 +257,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         mBottomSheetBehavior1 = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior1.setPeekHeight(120);
         mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        mBottomSheetBehavior1.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        mBottomSheetBehavior1.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
@@ -313,20 +315,17 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                                            @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
             }
         }
         updateLocationUI();
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
     }
 
@@ -379,13 +378,17 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                         Glide.with(getContext())
                                 .asBitmap()
                                 .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
-                                .into(new SimpleTarget<Bitmap>(180, 180) {
+                                .into(new CustomTarget<Bitmap>(180, 180) {
                                     @Override
-                                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                    public void onResourceReady(@NotNull Bitmap resource, Transition<? super Bitmap> transition) {
                                         final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
                                                 .title(LocalManagement.mValues.get(finalI).getTitulo())
                                                 .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
                                         marcador.setTag(finalI);
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
                                     }
                                 });
                     }
@@ -533,7 +536,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
             List<List<HashMap<String, String>>> routes = null;
-            JSONObject jsonObject = null;
+            JSONObject jsonObject;
 
             try {
                 jsonObject = new JSONObject(jsonString[0]);
@@ -556,7 +559,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
 
             super.onPostExecute(lists);
-            ArrayList points = null;
+            ArrayList points;
             PolylineOptions polylineOptions = null;
 
             for (List<HashMap<String, String>> path : lists) {
@@ -579,9 +582,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             }
             if (polylineOptions != null) {
                 mMap.addPolyline(polylineOptions);
-            } else {
-                //Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
-            }
+            }  //Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
+
         }
     }
 

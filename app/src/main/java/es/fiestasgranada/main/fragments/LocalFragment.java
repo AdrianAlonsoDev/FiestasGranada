@@ -3,6 +3,7 @@ package es.fiestasgranada.main.fragments;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import java.util.List;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.activities.HomeActivity;
+import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
+import es.fiestasgranada.main.databinding.FragmentLocalBinding;
 import es.fiestasgranada.main.listeners.LocalListener;
 import es.fiestasgranada.main.local.Local;
 import es.fiestasgranada.main.local.LocalManagement;
@@ -44,6 +47,7 @@ public class LocalFragment extends Fragment {
     private Context context = null;
     private int mColumnCount = 1;
     private LocalListener mListener;
+    FragmentLocalBinding binding;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -81,7 +85,6 @@ public class LocalFragment extends Fragment {
 
         // Set the adapter
         context = getContext();
-
 
         //  View drawer = inflater.inflate(R.layout.fragment_local_list, container, false);
 
@@ -143,7 +146,7 @@ public class LocalFragment extends Fragment {
                         listado.add(new Local(obj.getInt("id"),
                                 obj.getString("titulo"),
                                 obj.getString("descripcion"),
-                                obj.getString("fecha"),
+                                obj.getString("ultimaFecha"),
                                 obj.getString("URLImagen"),
                                 obj.getString("URLIcono"),
                                 obj.getDouble("latitud"),
@@ -155,7 +158,7 @@ public class LocalFragment extends Fragment {
                 }
             } catch (Exception e) {
 
-                Toast.makeText(HomeActivity.context, e.toString(), Toast.LENGTH_LONG).show();
+                Log.d("DEBUG", "doInBackground: " + e.getMessage());
             }
             return null;
         }

@@ -8,7 +8,7 @@ public class Local {
     private int id;
     private String titulo;
     private String descripcion;
-    private String fecha;
+    private String ultimaFecha;
     private double latitud;
     private double longitud;
     private String URLImagen;
@@ -20,11 +20,11 @@ public class Local {
 
     //constructores
 
-    public Local(int id, String titulo, String descripcion, String fecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, String direccion, String horario) {
+    public Local(int id, String titulo, String descripcion, String ultimaFecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, String direccion, String horario) {
         this.id = id;
         this.titulo = titulo;
         this.descripcion = descripcion;
-        this.fecha = fecha;
+        this.ultimaFecha = ultimaFecha;
         this.URLImagen = URLImagen;
         this.URLIcono = URLIcono;
         this.latitud = latitud;
@@ -86,12 +86,12 @@ public class Local {
         this.longitud = longitud;
     }
 
-    public String getFecha() {
-        return fecha;
+    public String getUltimaFecha() {
+        return ultimaFecha;
     }
 
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    public void setUltimaFecha(String ultimaFecha) {
+        this.ultimaFecha = ultimaFecha;
     }
 
     public String getDescripcion() {

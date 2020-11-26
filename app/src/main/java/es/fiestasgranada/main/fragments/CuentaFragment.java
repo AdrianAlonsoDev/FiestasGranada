@@ -39,14 +39,14 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private static String url;
-    private static View view;
+    private  View view;
     private GoogleSignInClient mSignInClient;
     private TextView nombre;
     private TextView email;
     private ImageView foto;
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mAuth;
-    private FragmentCuentaBinding binding;
+     FragmentCuentaBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
                     .requestEmail()
                     .build();
 
-            mSignInClient = GoogleSignIn.getClient(getActivity(), options);
+            mSignInClient = GoogleSignIn.getClient(requireActivity(), options);
 
 
             if (mAuth == null) {
@@ -132,6 +132,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        view = null;
     }
 
     @Override
@@ -166,13 +167,12 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         // [END_EXCLUDE]
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(getActivity(), new OnCompleteListener<AuthResult>() {
+                .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
 
                             updateUI();
                         } else {
@@ -202,7 +202,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         mAuth.signOut();
 
         // Google sign out
-        mSignInClient.signOut().addOnCompleteListener(getActivity(),
+        mSignInClient.signOut().addOnCompleteListener(requireActivity(),
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -216,7 +216,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         mAuth.signOut();
 
         // Google revoke access
-        mSignInClient.revokeAccess().addOnCompleteListener(getActivity(),
+        mSignInClient.revokeAccess().addOnCompleteListener(requireActivity(),
                 new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -227,7 +227,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
 
     private void showProgressBar() {
         if (mProgressDialog == null) {
-            mProgressDialog = new ProgressDialog(getActivity());
+            mProgressDialog = new ProgressDialog(requireActivity());
             // mProgressDialog.setMessage(getString(R.string.loading));
             mProgressDialog.setIndeterminate(true);
         }
