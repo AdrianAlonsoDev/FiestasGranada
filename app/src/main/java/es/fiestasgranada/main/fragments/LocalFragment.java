@@ -7,13 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -25,10 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import es.fiestasgranada.main.R;
-import es.fiestasgranada.main.activities.HomeActivity;
-import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
 import es.fiestasgranada.main.databinding.FragmentLocalBinding;
-import es.fiestasgranada.main.databinding.FragmentMapaBinding;
 import es.fiestasgranada.main.listeners.LocalListener;
 import es.fiestasgranada.main.local.Local;
 import es.fiestasgranada.main.local.LocalManagement;
@@ -42,13 +39,12 @@ import es.fiestasgranada.main.local.LocalManagement;
  */
 public class LocalFragment extends Fragment {
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
     public static final List<Local> listado = new ArrayList<>();
+    private static final String ARG_COLUMN_COUNT = "column-count";
     private static final String URL_API = "https://michiochi.synology.me/api.php";
-    private Context context = null;
+    FragmentLocalBinding binding;
     private int mColumnCount = 1;
     private LocalListener mListener;
-    FragmentLocalBinding binding;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -84,12 +80,12 @@ public class LocalFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_local_list, container, false);
 
-       // binding = FragmentLocalBinding.inflate(inflater, container, false);
+        // binding = FragmentLocalBinding.inflate(inflater, container, false);
         //view = binding.getRoot();
 
 
         // Set the adapter
-        context = getContext();
+        Context context = getContext();
 
         //  View drawer = inflater.inflate(R.layout.fragment_local_list, container, false);
 
@@ -115,7 +111,7 @@ public class LocalFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {//en el contexto recibe el activity home
+    public void onAttach(@NotNull Context context) {//en el contexto recibe el activity home
         super.onAttach(context);
         if (context instanceof LocalListener) {
             mListener = (LocalListener) context;
@@ -143,7 +139,7 @@ public class LocalFragment extends Fragment {
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 String json;
                 while ((json = bufferedReader.readLine()) != null) {
-                    sb.append(json + "\n");
+                    sb.append(json).append("\n");
                     JSONArray jsonArray = new JSONArray(json);
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);

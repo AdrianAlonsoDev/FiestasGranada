@@ -7,7 +7,6 @@ import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.databinding.ActivityMainBinding;
 import es.fiestasgranada.main.fragments.LocalFragment;
 import es.fiestasgranada.main.util.ProgressBarAnimation;
@@ -43,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setScaleY(3f);
 
         progressAnimation();
-
 
 
     }

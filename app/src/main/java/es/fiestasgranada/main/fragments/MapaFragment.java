@@ -74,14 +74,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     // Keys for storing activity state.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-
-    public static boolean routaNecesitada = false;
-
     // A default location (Granada, Spain) and default zoom to use when location permission is
     // not granted.
     private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
-    //Context used to Attach.
-    private Context context;
+    public static boolean routaNecesitada = false;
+    public static int idDest = 0;
     //Map calls
     private static GoogleMap mMap;
     private final LatLng mOrigin = PEDROANTONIO;
@@ -89,21 +86,18 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     //Managers and calls of images
     ImageCoverter convertidor = new ImageCoverter();
-
+    //Resources
+    LinearLayout tapactionlayout;
+    //Context used to Attach.
+    private Context context;
     // The entry point to the Places API.
     // The entry point to the Fused Location Provider.
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private boolean mLocationPermissionGranted;
-
     // The geographical location where the device is currently located. That is, the last-known
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
-    //Resources
-    LinearLayout tapactionlayout;
     private LatLng mDestination;
-    public static int idDest = 0;
-    private int id;
-
     private BottomSheetBehavior mBottomSheetBehavior1;
 
     private FragmentMapaBinding binding;
@@ -112,6 +106,48 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     public MapaFragment() {
         // Required empty public constructor
+    }
+
+    /**
+     * Request direction from Google Direction API
+     *
+     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
+     * @return JSON data routes/direction
+     */
+    private static String requestDirection(String requestedUrl) {
+        String responseString = "";
+        InputStream inputStream = null;
+        HttpURLConnection httpURLConnection = null;
+        try {
+            URL url = new URL(requestedUrl);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.connect();
+
+            inputStream = httpURLConnection.getInputStream();
+            InputStreamReader reader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            StringBuilder stringBuffer = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuffer.append(line);
+            }
+            responseString = stringBuffer.toString();
+            bufferedReader.close();
+            reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        httpURLConnection.disconnect();
+        return responseString;
     }
 
     /**
@@ -277,10 +313,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     }
 
-
     @Override
     public boolean onMarkerClick(Marker marker) {
-        id = (Integer) marker.getTag();
+
+        int id = (Integer) marker.getTag();
 
         convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), binding.bottomJsoft.ImgMarker);
         // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
@@ -365,7 +401,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         super.onDestroyView();
     }
 
-
     public void hacerRuta(LatLng origin, LatLng destination) {
 
         new TaskDirectionRequest().execute(buildRequestUrl(origin, destination));
@@ -385,49 +420,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         Log.d("TAG", url);
         return url;
     }
-
-    /**
-     * Request direction from Google Direction API
-     *
-     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
-     * @return JSON data routes/direction
-     */
-    private static String requestDirection(String requestedUrl) {
-        String responseString = "";
-        InputStream inputStream = null;
-        HttpURLConnection httpURLConnection = null;
-        try {
-            URL url = new URL(requestedUrl);
-            httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.connect();
-
-            inputStream = httpURLConnection.getInputStream();
-            InputStreamReader reader = new InputStreamReader(inputStream);
-            BufferedReader bufferedReader = new BufferedReader(reader);
-
-            StringBuilder stringBuffer = new StringBuilder();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuffer.append(line);
-            }
-            responseString = stringBuffer.toString();
-            bufferedReader.close();
-            reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        httpURLConnection.disconnect();
-        return responseString;
-    }
-
 
     /**
      * Prompts the user for permission to use the device location.
@@ -488,7 +480,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
 
-
     //Get JSON data from Google Direction
     public static class TaskDirectionRequest extends AsyncTask<String, Void, String> {
         @Override
@@ -513,6 +504,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     //Parse JSON Object from Google Direction API & display it on Map
     public static class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+        public static final int PATTERN_DASH_LENGTH_PX = 20;
+        public static final int PATTERN_GAP_LENGTH_PX = 10;
+        public final PatternItem DOT = new Dot();
+        public final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
+        public final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
+        public final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(DOT, GAP);
+
         @Override
         protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
             List<List<HashMap<String, String>>> routes = null;
@@ -527,13 +525,6 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             }
             return routes;
         }
-
-        public static final int PATTERN_DASH_LENGTH_PX = 20;
-        public static final int PATTERN_GAP_LENGTH_PX = 10;
-        public final PatternItem DOT = new Dot();
-        public final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
-        public final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
-        public final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(DOT, GAP);
 
         @Override
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {

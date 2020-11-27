@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,6 +29,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
 
+import org.jetbrains.annotations.NotNull;
+
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
 
@@ -39,7 +40,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private static final String TAG = "SignInActivity";
     private static final int RC_SIGN_IN = 9001;
     private static String url;
-    private  View view;
+    private View view;
     private GoogleSignInClient mSignInClient;
     private ImageView foto;
     private ProgressDialog mProgressDialog;
@@ -47,7 +48,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private FragmentCuentaBinding binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
@@ -166,14 +167,13 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-
-                            updateUI();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(getContext(), "Authentication Failed.", Toast.LENGTH_SHORT);
-                            updateUI();
                         }
+
+                        updateUI();
 
                         // [START_EXCLUDE]
                         hideProgressBar();

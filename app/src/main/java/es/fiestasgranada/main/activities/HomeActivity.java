@@ -24,12 +24,11 @@ public class HomeActivity extends AppCompatActivity implements LocalListener {
 
     FragmentTransaction transaccion;
     Fragment fragmentHome, fragmentCuenta, fragmentMapa;
-    private ActivityHomeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityHomeBinding.inflate(getLayoutInflater());
+        es.fiestasgranada.main.databinding.ActivityHomeBinding binding = ActivityHomeBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
 
