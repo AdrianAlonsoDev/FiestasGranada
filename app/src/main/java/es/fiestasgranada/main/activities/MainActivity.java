@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        progressBar = view.findViewById(R.id.cargabarra);
+        progressBar = binding.cargabarra;
 
         progressBar.setMax(100);
         progressBar.setScaleY(3f);

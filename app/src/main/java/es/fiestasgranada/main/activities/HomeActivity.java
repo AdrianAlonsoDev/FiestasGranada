@@ -41,7 +41,7 @@ public class HomeActivity extends AppCompatActivity implements LocalListener {
         getSupportFragmentManager().beginTransaction().add(R.id.cuentaFragment, new LocalFragment()).commit(); //Para poner tipo grid, usar LocalFragment().newInstance(2);.commit();
 
         //Initialize and Assign Variable
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottom_nav);
+        BottomNavigationView bottomNavigationView = binding.bottomNav;
 
         //Perform ItemSelectedListener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

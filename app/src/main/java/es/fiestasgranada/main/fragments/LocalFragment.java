@@ -28,6 +28,7 @@ import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.activities.HomeActivity;
 import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
 import es.fiestasgranada.main.databinding.FragmentLocalBinding;
+import es.fiestasgranada.main.databinding.FragmentMapaBinding;
 import es.fiestasgranada.main.listeners.LocalListener;
 import es.fiestasgranada.main.local.Local;
 import es.fiestasgranada.main.local.LocalManagement;
@@ -82,6 +83,10 @@ public class LocalFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_local_list, container, false);
+
+       // binding = FragmentLocalBinding.inflate(inflater, container, false);
+        //view = binding.getRoot();
+
 
         // Set the adapter
         context = getContext();

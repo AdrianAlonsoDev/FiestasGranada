@@ -41,12 +41,10 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private static String url;
     private  View view;
     private GoogleSignInClient mSignInClient;
-    private TextView nombre;
-    private TextView email;
     private ImageView foto;
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mAuth;
-     FragmentCuentaBinding binding;
+    private FragmentCuentaBinding binding;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,20 +53,16 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
             if (parent != null)
                 parent.removeView(view);
         }
+
         binding = FragmentCuentaBinding.inflate(inflater, container, false);
         view = binding.getRoot();
 
         try {
-            //view = inflater.inflate(R.layout.fragment_cuenta, container, false);
 
-            // Views
-            nombre = view.findViewById(R.id.p_nombre_tv);
-            foto = view.findViewById(R.id.foto_Perfil_CV);
-            email = view.findViewById(R.id.email_cv);
             // Button listeners
-            view.findViewById(R.id.sign_in_button).setOnClickListener(this);
-            view.findViewById(R.id.sign_out_button).setOnClickListener(this);
-            view.findViewById(R.id.sign_out_and_disconnect).setOnClickListener(this);
+            binding.signInButton.setOnClickListener(this);
+            binding.signOutButton.setOnClickListener(this);
+            binding.signOutAndDisconnect.setOnClickListener(this);
 
             // [START configure_signin]
             // Configure sign-in to request the user's ID, email address, and basic
@@ -132,7 +126,6 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-        view = null;
     }
 
     @Override
@@ -244,20 +237,20 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private void updateUI() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            nombre.setText(user.getDisplayName());
-            Picasso.get().load(user.getPhotoUrl()).resize(200, 200).into(foto);
-            email.setText(user.getEmail());
-            view.findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            view.findViewById(R.id.botones_deslogeo).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.cvPP).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.p_nombre_tv).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.email_cv).setVisibility(View.VISIBLE);
+            binding.pNombreTv.setText(user.getDisplayName());
+            Picasso.get().load(user.getPhotoUrl()).resize(200, 200).into(binding.fotoPerfilCV);
+            binding.emailCv.setText(user.getEmail());
+            binding.signInButton.setVisibility(View.GONE);
+            binding.botonesDeslogeo.setVisibility(View.VISIBLE);
+            binding.cvPP.setVisibility(View.VISIBLE);
+            binding.pNombreTv.setVisibility(View.VISIBLE);
+            binding.emailCv.setVisibility(View.VISIBLE);
 
         } else {
             //mStatusTextView.setText(R.string.signed_out);
 
-            view.findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            view.findViewById(R.id.botones_deslogeo).setVisibility(View.GONE);
+            binding.signInButton.setVisibility(View.VISIBLE);
+            binding.botonesDeslogeo.setVisibility(View.GONE);
 
         }
     }
