@@ -1,5 +1,6 @@
 package es.fiestasgranada.main.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -28,8 +28,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
-
-import org.jetbrains.annotations.NotNull;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
@@ -48,7 +46,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     private FragmentCuentaBinding binding;
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if (view != null) {
             ViewGroup parent = (ViewGroup) view.getParent();
             if (parent != null)
@@ -139,8 +137,10 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-                firebaseAuthWithGoogle(account.getIdToken());
+                if (account != null)
+                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+                if (account != null)
+                    firebaseAuthWithGoogle(account.getIdToken());
 
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -162,8 +162,9 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
+                    @SuppressLint("ShowToast")
                     @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
+                    public void onComplete(Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
@@ -198,7 +199,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         mSignInClient.signOut().addOnCompleteListener(requireActivity(),
                 new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(Task<Void> task) {
                         updateUI();
                     }
                 });
@@ -212,7 +213,7 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
         mSignInClient.revokeAccess().addOnCompleteListener(requireActivity(),
                 new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onComplete(Task<Void> task) {
                         updateUI();
                     }
                 });

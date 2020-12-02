@@ -20,7 +20,6 @@ import java.util.List;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.fragments.MapaFragment;
-import es.fiestasgranada.main.listeners.LocalListener;
 
 
 public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHolder> {
@@ -29,7 +28,7 @@ public class LocalManagement extends RecyclerView.Adapter<LocalManagement.ViewHo
     private Context context;
 
 
-    public LocalManagement(List<Local> listado, LocalListener listener) {
+    public LocalManagement(List<Local> listado) {
         mValues = listado;
     }
 

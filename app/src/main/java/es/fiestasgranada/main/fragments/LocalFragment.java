@@ -90,7 +90,7 @@ public class LocalFragment extends Fragment {
         //  View drawer = inflater.inflate(R.layout.fragment_local_list, container, false);
 
         //RecyclerView recyclerView = (RecyclerView) view;
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.listCardList);
+        RecyclerView recyclerView = view.findViewById(R.id.listCardList);
 
         if (mColumnCount <= 1) {
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -105,7 +105,7 @@ public class LocalFragment extends Fragment {
             e.printStackTrace();
         }*/
 
-        recyclerView.setAdapter(new LocalManagement(listado, mListener));
+        recyclerView.setAdapter(new LocalManagement(listado));
         return view;
 
     }

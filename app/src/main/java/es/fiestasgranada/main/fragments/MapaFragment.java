@@ -98,7 +98,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     // location retrieved by the Fused Location Provider.
     private Location mLastKnownLocation;
     private LatLng mDestination;
-    private BottomSheetBehavior mBottomSheetBehavior1;
+    private BottomSheetBehavior<View> mBottomSheetBehavior1;
 
     private FragmentMapaBinding binding;
 
@@ -146,7 +146,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                 }
             }
         }
-        httpURLConnection.disconnect();
+        if (httpURLConnection != null)
+            httpURLConnection.disconnect();
         return responseString;
     }
 
@@ -171,7 +172,8 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         // Build the map.
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null)
+            mapFragment.getMapAsync(this);
         context = getContext();
 
         // Retrieve location and camera position from saved instance state.
@@ -182,11 +184,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         // Retrieve the content view that renders the map.
 
         // Construct a PlacesClient
-        Places.initialize(getContext(), getString(R.string.google_maps_key));
-
-        // Construct a FusedLocationProviderClient.
-        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-
+        if (context != null) {
+            Places.initialize(context, getString(R.string.google_maps_key));
+            // Construct a FusedLocationProviderClient.
+            mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
+        }
         View bottomSheet = binding.bottomJsoft.bottomSheet1;
         mBottomSheetBehavior1 = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior1.setPeekHeight(120);
@@ -267,7 +269,7 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
                         //Usa glide para descargar la imagen y convertirla en Bitmap (resource) para que pueda sustituir al Maker
                         //por defecto de Google
-                        Glide.with(getContext())
+                        Glide.with(context)
                                 .asBitmap()
                                 .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
                                 .into(new CustomTarget<Bitmap>(180, 180) {
@@ -315,9 +317,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
-        int id = (Integer) marker.getTag();
-
+        int id = 0;
+        if (marker.getTag() != null) {
+            id = (Integer) marker.getTag();
+        } else {
+            Log.d("DEBUG", "onMarkerClick: Marker Tag is null l:321");
+        }
         convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), binding.bottomJsoft.ImgMarker);
         // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
         binding.bottomJsoft.txtNombreLocal.setText(LocalManagement.mValues.get(id).getTitulo());
@@ -353,21 +358,24 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     public void onStart() {
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         super.onStart();
-        f.onStart();
+        if (f != null)
+            f.onStart();
     }
 
     @Override
     public void onResume() {
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         super.onResume();
-        f.onResume();
+        if (f != null)
+            f.onResume();
     }
 
     @Override
     public void onPause() {
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         super.onPause();
-        f.onPause();
+        if (f != null)
+            f.onPause();
     }
 
     @Override
@@ -376,14 +384,16 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         view = null;
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         super.onStop();
-        f.onStop();
+        if (f != null)
+            f.onStop();
     }
 
     @Override
     public void onLowMemory() {
         Fragment f = getChildFragmentManager().findFragmentById(R.id.map);
         super.onLowMemory();
-        f.onLowMemory();
+        if (f != null)
+            f.onLowMemory();
     }
 
     @Override
@@ -430,12 +440,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
          * device. The result of the permission request is handled by a callback,
          * onRequestPermissionsResult.
          */
-        if (ContextCompat.checkSelfPermission(this.getContext(),
+        if (ContextCompat.checkSelfPermission(context,
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
         } else {
-            ActivityCompat.requestPermissions(getActivity(),
+            ActivityCompat.requestPermissions(requireActivity(),
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
@@ -453,9 +463,9 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(getActivity(), new OnCompleteListener<Location>() {
+                locationResult.addOnCompleteListener(requireActivity(), new OnCompleteListener<Location>() {
                     @Override
-                    public void onComplete(@NonNull Task<Location> task) {
+                    public void onComplete(Task<Location> task) {
                         if (task.isSuccessful()) {
                             // Set the map's camera position to the current location of the device.
                             mLastKnownLocation = task.getResult();
@@ -530,11 +540,11 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
 
             super.onPostExecute(lists);
-            ArrayList points;
+
             PolylineOptions polylineOptions = null;
 
             for (List<HashMap<String, String>> path : lists) {
-                points = new ArrayList();
+                ArrayList<LatLng> points = new ArrayList<>();
                 polylineOptions = new PolylineOptions();
 
                 for (HashMap<String, String> point : path) {
