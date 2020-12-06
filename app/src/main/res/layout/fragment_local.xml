@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidDomInspection -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,11 +8,12 @@
     android:layout_marginBottom="10dp"
     android:animateLayoutChanges="true"
     android:background="#00E4E3E3"
-    tools:context=".local.LocalManagement">
+    tools:context=".management.LocalManagement">
 
     <!--
     CardView principal
     -->
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView3"
         android:layout_width="match_parent"
@@ -33,11 +34,12 @@
             - Imagen
             - Botón de ofertas
          -->
+
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/localConstraint2"
+            android:id="@+id/localConstraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:elevation="4dp"
+            android:elevation="3dp"
             android:paddingBottom="2dp">
 
 
@@ -54,11 +56,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:foregroundGravity="center"
-                android:gravity="clip_horizontal"
+                android:gravity="center"
+                android:outlineAmbientShadowColor="#000000"
+                android:outlineSpotShadowColor="#000000"
+                android:shadowColor="#000000"
+                android:shadowDx="8"
+                android:shadowDy="8"
+                android:shadowRadius="16"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.384"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/imagenLocal" />
 
@@ -68,73 +75,121 @@
                 android:layout_height="220dp"
                 android:layout_margin="4dp"
                 android:layout_marginTop="4dp"
-                android:elevation="2dp"
+                android:elevation="0dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintDimensionRatio="H,16:9"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <!--
+             Trabajamos dentro de otro un Constraint Layout
+                - Descripcion desplegable
+             -->
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/infoLocal"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:background="#BA0B0B0B"
                 android:elevation="100dp"
+                android:foregroundGravity="top"
                 app:layout_constraintBottom_toBottomOf="@+id/imagenLocal"
                 app:layout_constraintEnd_toEndOf="@+id/imagenLocal"
-                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintHorizontal_bias="0.142"
                 app:layout_constraintStart_toStartOf="@+id/imagenLocal"
-                app:layout_constraintTop_toBottomOf="@+id/tituloLocal"
+                app:layout_constraintTop_toTopOf="@+id/imagenLocal"
                 app:layout_constraintVertical_bias="1.0">
 
                 <TextView
                     android:id="@+id/disponibilidadLocal"
-                    android:layout_width="51dp"
-                    android:layout_height="21dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_margin="4dp"
                     android:background="@drawable/botonabierto"
                     android:elevation="100dp"
                     android:gravity="center"
-                    android:text="Abierto"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:padding="5dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="8"
+                    android:shadowDy="8"
+                    android:shadowRadius="18"
+                    android:text="ABIERTO"
                     android:textColor="#26D12D"
                     android:textSize="13sp"
                     android:textStyle="normal"
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/botonOfertas"
+                    app:layout_constraintStart_toEndOf="@+id/ofertasBut"
                     app:layout_constraintTop_toTopOf="parent" />
+
 
                 <TextView
                     android:id="@+id/noDisponibilidadLocal"
-                    android:layout_width="51dp"
-                    android:layout_height="21dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_margin="8dp"
+                    android:layout_margin="6dp"
                     android:background="@drawable/botoncerrado"
-                    android:elevation="100dp"
+                    android:elevation="8dp"
+                    android:foregroundGravity="right"
                     android:gravity="center"
-                    android:text="Cerrado"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:padding="5dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="5"
+                    android:shadowDy="5"
+                    android:shadowRadius="15"
+                    android:text="CERRADO"
+                    android:textAlignment="center"
                     android:textColor="#D12626"
                     android:textSize="13sp"
                     android:textStyle="normal"
+                    android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/botonOfertas"
+                    app:layout_constraintStart_toEndOf="@+id/ofertasBut"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/ofertasBut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="4dp"
+                    android:layout_marginEnd="64dp"
+                    android:background="@drawable/evento_oferta"
+                    android:elevation="8dp"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:padding="5dp"
+                    android:shadowColor="#000000"
+                    android:shadowDx="5"
+                    android:shadowDy="5"
+                    android:shadowRadius="15"
+                    android:text="Eventos &amp; Ofertas"
+                    android:textColor="#E91E63"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.558"
+                    app:layout_constraintStart_toEndOf="@+id/textViewHorario"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.454" />
+                    app:layout_constraintVertical_bias="0.333" />
 
                 <Button
                     android:id="@+id/botonOfertas"
                     android:layout_width="30dp"
                     android:layout_height="23dp"
                     android:layout_marginStart="276dp"
-                    android:layout_marginLeft="276dp"
                     android:background="@drawable/oferta"
+                    android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -143,25 +198,30 @@
                     android:id="@+id/textViewHorario"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginLeft="40dp"
-                    android:text="Horario:"
+                    android:layout_marginLeft="2dp"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:shadowColor="#000000"
+                    android:shadowDx="10"
+                    android:shadowDy="10"
+                    android:shadowRadius="20"
+                    android:text="Horario: "
                     android:textColor="#DADADA"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.461" />
+                    app:layout_constraintStart_toEndOf="@+id/imageView"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
                     android:id="@+id/imageView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="2dp"
+                    android:elevation="4dp"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
                     android:src="@drawable/ic_watch"
                     app:itemIconTint="#BCBCBC"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/textViewHorario"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -169,19 +229,21 @@
                     android:id="@+id/horariotextview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginLeft="12dp"
+                    android:layout_marginLeft="2dp"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:shadowColor="#000000"
+                    android:shadowDx="8"
+                    android:shadowDy="8"
+                    android:shadowRadius="18"
                     android:textColor="#C5C5C5"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/ofertasBut"
+                    app:layout_constraintHorizontal_bias="0.01"
                     app:layout_constraintStart_toEndOf="@+id/textViewHorario"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.461" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <!--
-             Trabajamos dentro de otro un Constraint Layout
-                - Descripcion desplegable
-             -->
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/descripcionLocal"
@@ -197,6 +259,12 @@
                     android:id="@+id/descOculta"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    android:shadowColor="#000000"
+                    android:shadowDx="5"
+                    android:shadowDy="5"
+                    android:shadowRadius="15"
                     android:textColor="#C1C1C1"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -211,8 +279,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
                 android:layout_marginTop="12dp"
+                android:outlineAmbientShadowColor="#000000"
+                android:outlineSpotShadowColor="#000000"
+                android:shadowColor="#000000"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="15"
                 android:text="Dirección:"
                 android:textColor="#7c8297"
                 app:layout_constraintStart_toStartOf="parent"
@@ -223,6 +296,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
+                android:outlineAmbientShadowColor="#000000"
+                android:outlineSpotShadowColor="#000000"
+                android:shadowColor="#000000"
+                android:shadowDx="5"
+                android:shadowDy="5"
+                android:shadowRadius="15"
                 android:textColor="#C1C1C1"
                 app:layout_constraintStart_toStartOf="@+id/direcciontv"
                 app:layout_constraintTop_toBottomOf="@+id/direcciontv" />
@@ -234,12 +313,17 @@
                 android:layout_centerInParent="true"
                 android:layout_marginTop="15dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/botonruta"
-                android:elevation="100dp"
+                android:elevation="8dp"
                 android:gravity="center"
+                android:outlineAmbientShadowColor="#000000"
+                android:outlineSpotShadowColor="#000000"
                 android:padding="4dp"
+                android:shadowColor="#000000"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="8"
                 android:text="HACER RUTA"
                 android:textColor="#4381ff"
                 android:textSize="14sp"
@@ -253,17 +337,62 @@
                 android:id="@+id/ratingBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="91dp"
-                android:layout_marginRight="91dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="84dp"
                 android:numStars="5"
                 android:rating="0"
                 android:scaleX="0.5"
                 android:scaleY="0.5"
+                android:theme="@style/RatingBar"
                 app:layout_constraintEnd_toStartOf="@+id/rutaBoton"
                 app:layout_constraintTop_toBottomOf="@+id/direccionTextCard" />
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardView"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:visibility="visible"
+                app:cardBackgroundColor="#00000000"
+                app:cardElevation="0dp"
+                app:cardMaxElevation="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/infoLocal"
+                app:layout_constraintEnd_toEndOf="@+id/imagenLocal"
+                app:layout_constraintHorizontal_bias="0.96"
+                app:layout_constraintStart_toStartOf="@+id/imagenLocal"
+                app:layout_constraintTop_toTopOf="@+id/imagenLocal">
 
+                <LinearLayout
+                    android:layout_width="55dp"
+                    android:layout_height="58dp"
+                    android:layout_gravity="right|top"
+                    android:background="@drawable/heart_shadow"
+                    android:elevation="-2dp"
+                    android:gravity="center">
+
+                </LinearLayout>
+
+                <es.fiestasgranada.main.util.buttons.Boton
+                    android:id="@+id/like_but"
+                    android:layout_width="56dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="right|top"
+                    android:layout_marginBottom="0.5dp"
+                    android:adjustViewBounds="true"
+                    android:elevation="8dp"
+                    android:outlineAmbientShadowColor="#000000"
+                    android:outlineSpotShadowColor="#000000"
+                    app:anim_scale_factor="8"
+                    app:icon_size="48dp"
+                    app:icon_type="Heart"
+                    app:is_enabled="true"
+                    app:like_drawable="@drawable/heart_on"
+                    app:unlike_drawable="@drawable/heart_shadow">
+
+
+                </es.fiestasgranada.main.util.buttons.Boton>
+
+
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>

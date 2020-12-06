@@ -27,23 +27,29 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.databinding.FragmentCuentaBinding;
+import es.fiestasgranada.main.user.User;
 
 
 public class CuentaFragment extends Fragment implements View.OnClickListener {
 
-    private static final String TAG = "SignInActivity";
-    private static final int RC_SIGN_IN = 9001;
-    private static String url;
+    private final String TAG = "DEBUG";
+    private final String TAGLOC = "CuentaFrgmnt";
+    private final int RC_SIGN_IN = 9001;
+    private String url;
     private View view;
     private GoogleSignInClient mSignInClient;
     private ImageView foto;
     private ProgressDialog mProgressDialog;
     private FirebaseAuth mAuth;
     private FragmentCuentaBinding binding;
+    private DatabaseReference mDatabase;
+    private FirebaseUser user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,51 +59,37 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
                 parent.removeView(view);
         }
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         binding = FragmentCuentaBinding.inflate(inflater, container, false);
         view = binding.getRoot();
 
         try {
-
-            // Button listeners
+            // Listeners de botones
             binding.signInButton.setOnClickListener(this);
             binding.signOutButton.setOnClickListener(this);
             binding.signOutAndDisconnect.setOnClickListener(this);
 
-            // [START configure_signin]
-            // Configure sign-in to request the user's ID, email address, and basic
-            // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+            /** Configura sign-in para solicitar el user's ID, email, y perfil
+             básico. ID y el perfil básico están incluidos en DEFAULT_SIGN_IN.*/
             GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                     .requestIdToken(getString(R.string.default_web_client_id))
                     .requestEmail()
                     .build();
 
             mSignInClient = GoogleSignIn.getClient(requireActivity(), options);
+            mAuth = FirebaseAuth.getInstance();
 
 
-            if (mAuth == null) {
-                mAuth = FirebaseAuth.getInstance();
-            } else {
-                Log.d("mAuthInstance", " is not null");
-
-            }
-
-            // [END build_client]
-
-            // [START customize_button]
-            // Customize sign-in button. The sign-in button can be displayed in
-            // multiple sizes and color schemes. It can also be contextually
-            // rendered based on the requested scopes. For example. a red button may
-            // be displayed when Google+ scopes are requested, but a white button
-            // may be displayed when only basic profile is requested. Try adding the
-            // Scopes.PLUS_LOGIN scope to the GoogleSignInOptions to see the
-            // difference.
+            /** Customiza el botón sign in. Puede ser mostrado con3
+             *  Scopes.PLUS_LOGIN scope hacia GoogleSignInOptions
+             *  para ver la diferencia.
+             */
             SignInButton signInButton = view.findViewById(R.id.sign_in_button);
             signInButton.setSize(SignInButton.SIZE_WIDE);
-            // [END customize_button]
 
 
         } catch (InflateException e) {
-            /* map is already there, just return view as it is */
+            /* El mapa ya está aquí, return de la view como está. */
         }
         super.onCreate(savedInstanceState);
 
@@ -108,11 +100,14 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-
         updateUI();
-
-        //  hideProgressBar();
-
+        if (mAuth.getCurrentUser() != null) {
+            user = mAuth.getCurrentUser();
+            writeNewUser(user.getUid(), user.getDisplayName(), user.getEmail());
+            Log.d(TAG + TAGLOC, " -> onStart-> Usuario con sesión activa: " + user.getDisplayName() + "\n[" + mAuth.getUid() + "]");
+        } else {
+            Log.d(TAG + TAGLOC, " -> onStart-> Ningún usuario logeado");
+        }
     }
 
     @Override
@@ -131,35 +126,30 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        // Resultado devuelto de lanzar el Intent desde GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
-                // Google Sign In was successful, authenticate with Firebase
+                // Google Sign In ha sido un éxito, autentificación con Firebase,
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 if (account != null)
-                    Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
-                if (account != null)
+                    Log.d(TAG + TAGLOC, " -> onActivityResult -> firebaseAuthWithGoogle: Login request de " + account.getId());
                     firebaseAuthWithGoogle(account.getIdToken());
 
             } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                Log.w(TAG, "Google sign in failed", e);
-                // [START_EXCLUDE]
+                // Google Sign In ha fallado, update UI acordemente.
+                Log.w(TAG + TAGLOC, " -> onActivityResult -> Google sign in failed", e);
                 updateUI();
-                // [END_EXCLUDE]
             }
         }
     }
 
-    // [END onActivityResult]
 
-    // [START auth_with_google]
     private void firebaseAuthWithGoogle(String idToken) {
-        // [START_EXCLUDE silent]
+
         showProgressBar();
-        // [END_EXCLUDE]
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(requireActivity(), new OnCompleteListener<AuthResult>() {
                     @SuppressLint("ShowToast")
@@ -167,29 +157,30 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
                     public void onComplete(Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
-                            Log.d(TAG, "signInWithCredential:success");
+                            user = mAuth.getCurrentUser();
+                            Log.d(TAG + TAGLOC, " -> firebaseAuthWithGoogle -> Authentication Succesfull de : " + user.getDisplayName() + "\n[" + mAuth.getUid() + "]");
+                            writeNewUser(user.getUid(), user.getDisplayName(), user.getEmail());
                         } else {
                             // If sign in fails, display a message to the user.
-                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Log.d(TAG + TAGLOC, " -> firebaseAuthWithGoogle -> onComplete Error -> " + task.getException());
                             Toast.makeText(getContext(), "Authentication Failed.", Toast.LENGTH_SHORT);
                         }
 
                         updateUI();
-
-                        // [START_EXCLUDE]
                         hideProgressBar();
-                        // [END_EXCLUDE]
                     }
                 });
     }
-    // [END handleSignInResult]
 
-    // [START signin]
+    private void writeNewUser(String userId, String name, String email) {
+        User user = new User(name, email);
+        mDatabase.child("users").child(userId).setValue(user);
+    }
+
     private void signIn() {
         Intent signInIntent = mSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
-    // [END signin]
 
     private void signOut() {
         // Firebase sign out
@@ -197,26 +188,15 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
 
         // Google sign out
         mSignInClient.signOut().addOnCompleteListener(requireActivity(),
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(Task<Void> task) {
-                        updateUI();
-                    }
-                });
+                task -> updateUI());
     }
 
     private void revokeAccess() {
         // Firebase sign out
         mAuth.signOut();
-
         // Google revoke access
         mSignInClient.revokeAccess().addOnCompleteListener(requireActivity(),
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(Task<Void> task) {
-                        updateUI();
-                    }
-                });
+                task -> updateUI());
     }
 
     private void showProgressBar() {
@@ -243,7 +223,8 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
             binding.emailCv.setText(user.getEmail());
             binding.signInButton.setVisibility(View.GONE);
             binding.botonesDeslogeo.setVisibility(View.VISIBLE);
-            binding.cvPP.setVisibility(View.VISIBLE);
+            binding.fotoPerfilCV.setVisibility(View.VISIBLE);
+            binding.perfilCardView.setVisibility(View.VISIBLE);
             binding.pNombreTv.setVisibility(View.VISIBLE);
             binding.emailCv.setVisibility(View.VISIBLE);
 
@@ -251,6 +232,10 @@ public class CuentaFragment extends Fragment implements View.OnClickListener {
             //mStatusTextView.setText(R.string.signed_out);
 
             binding.signInButton.setVisibility(View.VISIBLE);
+            binding.pNombreTv.setVisibility(View.GONE);
+            binding.fotoPerfilCV.setVisibility(View.GONE);
+            binding.emailCv.setVisibility(View.GONE);
+            binding.perfilCardView.setVisibility(View.GONE);
             binding.botonesDeslogeo.setVisibility(View.GONE);
 
         }

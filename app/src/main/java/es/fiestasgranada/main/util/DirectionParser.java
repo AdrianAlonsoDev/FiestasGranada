@@ -12,7 +12,8 @@ import java.util.List;
 
 public class DirectionParser {
     /**
-     * Receives a JSONObject and returns a list of lists containing latitude and longitude
+     * Recibe un JSONObject y devuelve una lista
+     * de listas que contienen latitudes y longitudes.
      */
     public List<List<HashMap<String, String>>> parse(JSONObject jObject) {
 
@@ -28,7 +29,7 @@ public class DirectionParser {
             //* Traversing all routes */
             for (int i = 0; i < jRoutes.length(); i++) {
                 jLegs = ((JSONObject) jRoutes.get(i)).getJSONArray("legs");
-                List path = new ArrayList<HashMap<String, String>>();
+                List<HashMap<String, String>> path = new ArrayList<>();
 
                 //* Traversing all legs */
                 for (int j = 0; j < jLegs.length(); j++) {

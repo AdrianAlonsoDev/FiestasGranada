@@ -1,19 +1,18 @@
 package es.fiestasgranada.main.fragments;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -23,46 +22,32 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import es.fiestasgranada.main.R;
-import es.fiestasgranada.main.databinding.FragmentLocalBinding;
-import es.fiestasgranada.main.listeners.LocalListener;
 import es.fiestasgranada.main.local.Local;
-import es.fiestasgranada.main.local.LocalManagement;
-
+import es.fiestasgranada.main.local.listeners.LocalListener;
+import es.fiestasgranada.main.management.LocalManagement;
 
 /**
- * A fragment representing a list of Items.
+ * Un fragmento representando un contenedor con una lista.
  * <p/>
- * Activities containing this fragment MUST implement the {@link LocalListener}
- * interface.
+ * Actividades que contienen este fragmento deben implementar la interfaz {@link LocalListener}
+ * .
  */
 public class LocalFragment extends Fragment {
 
     public static final List<Local> listado = new ArrayList<>();
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private static final String URL_API = "https://michiochi.synology.me/api.php";
-    FragmentLocalBinding binding;
+    private final String ARG_COLUMN_COUNT = "column-count";
     private int mColumnCount = 1;
-    private LocalListener mListener;
+
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Constructor vacio obligatorio para instanciar el fragmento
+     * (e.j. cambio de rotacion de pantalla)
      */
     public LocalFragment() {
-
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static LocalFragment newInstance(int columnCount) {
-        LocalFragment fragment = new LocalFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-
-        return fragment;
     }
 
     @Override
@@ -83,7 +68,6 @@ public class LocalFragment extends Fragment {
         // binding = FragmentLocalBinding.inflate(inflater, container, false);
         //view = binding.getRoot();
 
-
         // Set the adapter
         Context context = getContext();
 
@@ -99,40 +83,16 @@ public class LocalFragment extends Fragment {
         }
 
 
-        /*try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }*/
-
         recyclerView.setAdapter(new LocalManagement(listado));
         return view;
 
     }
 
-    @Override
-    public void onAttach(@NotNull Context context) {//en el contexto recibe el activity home
-        super.onAttach(context);
-        if (context instanceof LocalListener) {
-            mListener = (LocalListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    public static class DownloadJSON extends AsyncTask<Void, Void, String> {
-
-        @Override
-        protected String doInBackground(Void... voids) {
+    public static void DownloadTaskAsync() {
+        String URL_API = "https://michiochi.synology.me/api.php";
+        ExecutorService executors = Executors.newFixedThreadPool(1);
+        Runnable runnable = () -> {
             try {
-
                 URL url = new URL(URL_API);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 StringBuilder sb = new StringBuilder();
@@ -144,7 +104,7 @@ public class LocalFragment extends Fragment {
                     for (int i = 0; i < jsonArray.length(); i++) {
                         JSONObject obj = jsonArray.getJSONObject(i);
 
-                        listado.add(new Local(obj.getInt("id"),
+                        listado.add(new Local(obj.getInt("uid"),
                                 obj.getString("titulo"),
                                 obj.getString("descripcion"),
                                 obj.getString("ultimaFecha"),
@@ -154,20 +114,33 @@ public class LocalFragment extends Fragment {
                                 obj.getDouble("longitud"),
                                 obj.getString("abierto"),
                                 obj.getString("direccion"),
-                                obj.getString("horario")));
+                                obj.getString("horario")) {
+                            @Override
+                            public RatingBar getRating() {
+                                return null;
+                            }
+                        });
+
+                        Log.d("DEBUG LocalFragment", " -> DownloadTaskAsync -> Locals added successfully.");
+
                     }
                 }
             } catch (Exception e) {
-
-                Log.d("DEBUG", "doInBackground: " + e.getMessage());
+                Log.d("DEBUG LocalFragment", " -> ERR DownloadTaskAsync %s -> " + e.getStackTrace());
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-
-        }
+        };
+        executors.submit(runnable);
     }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onAttach(Context context) {//en el contexto recibe el activity home
+        super.onAttach(context);
+
+    }
+
 }

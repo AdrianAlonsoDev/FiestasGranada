@@ -3,10 +3,9 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:angle="360"
-                android:endColor="#FF0000"
-                android:startColor="#A80000"
-                android:type="sweep" />
+                android:endColor="#E91E63"
+                android:startColor="#9C27B0"
+                android:type="linear" />
             <size
                 android:width="24dp"
                 android:height="24dp" />
@@ -19,7 +18,7 @@
         android:right="1dp"
         android:top="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorBlueMenu" />
+            <solid android:color="#E6242842" />
             <corners android:radius="5dp" />
         </shape>
     </item>

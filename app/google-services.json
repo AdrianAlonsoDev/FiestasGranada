@@ -45,17 +45,17 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:447496362635:android:a57652b0ade9baae2c528e",
+        "mobilesdk_app_id": "1:447496362635:android:c10b4ba87bed2d472c528e",
         "android_client_info": {
-          "package_name": "es.fiestasgranada.main.FG.FiestasGranada"
+          "package_name": "es.fiestasgranada.main.debug"
         }
       },
       "oauth_client": [
         {
-          "client_id": "447496362635-qsu7hj5dt31h7qmdt7ot1iqkefplk1o7.apps.googleusercontent.com",
+          "client_id": "447496362635-7k7gnq5p7fe8qmli5n53saluta0psvr5.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "es.fiestasgranada.main.FG.FiestasGranada",
+            "package_name": "es.fiestasgranada.main.debug",
             "certificate_hash": "220e884d3c97e4e59007e9f6b082d1dffc024b6b"
           }
         },

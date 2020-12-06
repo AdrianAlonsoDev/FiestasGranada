@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidDomInspection -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        tools:context=".local.LocalManagement">
+        tools:context=".management.LocalManagement">
 
         <!--
     CardView principal
@@ -42,14 +42,14 @@
             - Botón de ofertas
          -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/localConstraint2"
+                android:id="@+id/localConstraintLayout"
                 android:layout_width="match_parent"
                 android:layout_height="309dp"
                 android:elevation="4dp"
                 android:paddingBottom="2dp">
 
                 <TextView
-                    android:id="@+id/textView2"
+                    android:id="@+id/fragmentCuentaTitulo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -61,14 +61,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.cardview.widget.CardView
-                    android:id="@+id/cvPP"
+                    android:id="@+id/perfilCardView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     app:cardCornerRadius="60dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView2">
+                    app:layout_constraintTop_toBottomOf="@+id/fragmentCuentaTitulo">
 
                     <ImageView
                         android:id="@+id/foto_Perfil_CV"
@@ -91,8 +91,20 @@
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/cvPP" />
+                    app:layout_constraintTop_toBottomOf="@+id/perfilCardView" />
 
+                <TextView
+                    android:id="@+id/email_cv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:foregroundGravity="center"
+                    android:gravity="center"
+                    android:textColor="#FFFFFF"
+                    android:visibility="gone"
+                    app:layout_constraintStart_toStartOf="@+id/p_nombre_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/p_nombre_tv" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <com.google.android.gms.common.SignInButton
                     android:id="@+id/sign_in_button"
@@ -107,17 +119,6 @@
 
                 </com.google.android.gms.common.SignInButton>
 
-                <TextView
-                    android:id="@+id/email_cv"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Email:"
-                    android:textColor="#FFFFFF"
-                    android:visibility="gone"
-                    app:layout_constraintStart_toStartOf="@+id/p_nombre_tv"
-                    app:layout_constraintTop_toBottomOf="@+id/p_nombre_tv" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 

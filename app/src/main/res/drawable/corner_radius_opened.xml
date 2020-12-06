@@ -3,14 +3,20 @@
     <item>
         <shape android:shape="rectangle">
             <gradient
-                android:angle="360"
-                android:endColor="#FF0000"
-                android:startColor="#A80000"
-                android:type="sweep" />
+                android:angle="270"
+                android:centerColor="@color/colorBlueDefault"
+                android:endColor="@color/colorBlueDefault"
+                android:startColor="@color/colorLightBlue"
+                android:type="linear" />
             <size
                 android:width="24dp"
                 android:height="24dp" />
-            <corners android:radius="5dp" />
+            <corners
+                android:bottomLeftRadius="0.1dp"
+                android:bottomRightRadius="0.1dp"
+                android:topLeftRadius="6dp"
+                android:topRightRadius="6dp" />
+
         </shape>
     </item>
     <item
@@ -19,7 +25,7 @@
         android:right="1dp"
         android:top="1dp">
         <shape android:shape="rectangle">
-            <solid android:color="@color/colorBlueMenu" />
+            <solid android:color="#D81B1E2F" />
             <corners android:radius="5dp" />
         </shape>
     </item>

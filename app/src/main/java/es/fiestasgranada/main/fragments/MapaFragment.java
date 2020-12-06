@@ -1,5 +1,6 @@
 package es.fiestasgranada.main.fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,8 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -44,7 +43,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -61,58 +59,63 @@ import java.util.List;
 
 import es.fiestasgranada.main.R;
 import es.fiestasgranada.main.databinding.FragmentMapaBinding;
-import es.fiestasgranada.main.local.LocalManagement;
+import es.fiestasgranada.main.management.LocalManagement;
 import es.fiestasgranada.main.util.DirectionParser;
-import es.fiestasgranada.main.util.ImageCoverter;
+import es.fiestasgranada.main.util.ImageConverter;
 
 public class MapaFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
-
-    private static final int DEFAULT_ZOOM = 15;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-
-    // Keys for storing activity state.
+    // Keys para guardar la posición de la camara y localidad.
     private static final String KEY_CAMERA_POSITION = "camera_position";
     private static final String KEY_LOCATION = "location";
-    // A default location (Granada, Spain) and default zoom to use when location permission is
-    // not granted.
+    //Permisos garantizados o no por el dispositivo.
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
+    //Lugar por defecto (Granada, Spain) y zoom por defecto cuando el permiso no ha sido dado.
     private static final LatLng PEDROANTONIO = new LatLng(37.177, -3.609);
-    public static boolean routaNecesitada = false;
-    public static int idDest = 0;
-    //Map calls
+    private static final int DEFAULT_ZOOM = 15;
+    public static int idDest;
+    //Llamadas al mapa.
     private static GoogleMap mMap;
-    private final LatLng mOrigin = PEDROANTONIO;
-
-
-    //Managers and calls of images
-    ImageCoverter convertidor = new ImageCoverter();
+    //TAG para del bug y buscarlo en LOGCAT.
+    private final String TAG = "DEBUG";
+    //Rutas de los locales con Directions.
+    public LatLng mOrigin;
+    //Managers y llamadas de las imágenes
+    ImageConverter convertidor = new ImageConverter();
+    private LinearLayout dirSheet;
     //Resources
     LinearLayout tapactionlayout;
-    //Context used to Attach.
-    private Context context;
-    // The entry point to the Places API.
-    // The entry point to the Fused Location Provider.
-    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private LinearLayout descSheet;
     private boolean mLocationPermissionGranted;
-    // The geographical location where the device is currently located. That is, the last-known
-    // location retrieved by the Fused Location Provider.
-    private Location mLastKnownLocation;
     private LatLng mDestination;
+    //Context usado para Attach.
+    private Context context;
+    // El punto de entrada de Fused Location Provider.
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    /* El lugar geofráfico donde se encuentra el dispositivo. Es decir,
+     * el último lugar recibido por el  Fused Location Provider. */
+    private Location mLastKnownLocation;
+    //Para controlar la ventana deslizante de información de los locales.
     private BottomSheetBehavior<View> mBottomSheetBehavior1;
-
+    //Viewbinding que sustituye a findViewById
     private FragmentMapaBinding binding;
-
+    //Llamada y manager de view.
     private View view;
+    private boolean clickMarcador = false;
+
+    private boolean expandido = false;
+
 
     public MapaFragment() {
-        // Required empty public constructor
+        /* Constructor vacío necesario obligatorio
+         * en todos los fragments*/
     }
 
     /**
-     * Request direction from Google Direction API
+     * Pedir dirección desde Google Direction API
      *
-     * @param requestedUrl see {@link #buildRequestUrl(LatLng, LatLng)}
-     * @return JSON data routes/direction
+     * @param requestedUrl mirar {@link #buildRequestUrl(LatLng, LatLng)}
+     * @return JSON data rutas/dirección
      */
     private static String requestDirection(String requestedUrl) {
         String responseString = "";
@@ -152,10 +155,10 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     /**
-     * Saves the state of the map when the activity is paused.
+     * Guarda el estado del mapa cuando la actividad es pausada .
      */
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         if (mMap != null) {
             outState.putParcelable(KEY_CAMERA_POSITION, mMap.getCameraPosition());
             outState.putParcelable(KEY_LOCATION, mLastKnownLocation);
@@ -164,94 +167,123 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
+        // Infla la layout para el fagmento con View binding.
         binding = FragmentMapaBinding.inflate(inflater, container, false);
         view = binding.getRoot();
-        // Build the map.
-        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
 
-        if (mapFragment != null)
+        // Construye el mapa.
+        SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFragment != null) {
             mapFragment.getMapAsync(this);
+        }
+
+        //Attach context
         context = getContext();
 
-        // Retrieve location and camera position from saved instance state.
+        // Recibe el lugar y la posición de la camara guardada en la instancia.
         if (savedInstanceState != null) {
             mLastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
 
-        // Retrieve the content view that renders the map.
 
-        // Construct a PlacesClient
+        // Construye un PlacesClient
         if (context != null) {
             Places.initialize(context, getString(R.string.google_maps_key));
-            // Construct a FusedLocationProviderClient.
+            // Construye un FusedLocationProviderClient.
             mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         }
+
+        //Controlador de la ventana deslizante de información.
         View bottomSheet = binding.bottomJsoft.bottomSheet1;
         mBottomSheetBehavior1 = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior1.setPeekHeight(120);
         mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_COLLAPSED);
         mBottomSheetBehavior1.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+            public void onStateChanged(View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
-                    binding.bottomJsoft.tapActionLayout.setVisibility(View.VISIBLE);
+                    binding.bottomJsoft.bottomSheet1.setBackgroundResource(R.drawable.corner_radius);
+                    expandido = false;
+                    if (!clickMarcador) {
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.GONE);
+                        binding.bottomJsoft.MainSheet.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.descSheet.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "Collapsed No Review");
+
+
+                    } else if (clickMarcador) {
+
+                        binding.bottomJsoft.descSheet.setVisibility(View.GONE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.GONE);
+                        binding.bottomJsoft.MainSheet.setVisibility(View.GONE);
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.VISIBLE);
+
+                        Log.d(TAG, "Collapsed Review de click en marcador");
+                    }
                 }
                 if (newState == BottomSheetBehavior.STATE_EXPANDED) {
-                    binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+                    expandido = true;
+                    binding.bottomJsoft.MainSheet.setVisibility(View.VISIBLE);
+                    if (clickMarcador) {
+                        binding.bottomJsoft.descSheet.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+                        Log.d(TAG, "Expanded Review de click en marcador");
+
+                    } else {
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.GONE);
+                        binding.bottomJsoft.descSheet.setVisibility(View.GONE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.GONE);
+                        Log.d(TAG, "Expanded No Review");
+
+                    }
+                    binding.bottomJsoft.bottomSheet1.setBackgroundResource(R.drawable.corner_radius_opened);
+
                 }
                 if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+                    binding.bottomJsoft.MainSheet.setVisibility(View.VISIBLE);
+                    expandido = true;
+                    if (clickMarcador) {
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.descSheet.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "Dragging Review de click en marcador");
+
+                    } else {
+
+                        binding.bottomJsoft.tapActionLayout.setVisibility(View.VISIBLE);
+                        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.GONE);
+                        binding.bottomJsoft.descSheet.setVisibility(View.GONE);
+                        binding.bottomJsoft.dirSheet.setVisibility(View.GONE);
+                        Log.d(TAG, "Dragging No Review ");
+
+                    }
+                    binding.bottomJsoft.bottomSheet1.setBackgroundResource(R.drawable.corner_radius_opened);
                 }
             }
 
             @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
-
-        bottomSheet.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mBottomSheetBehavior1.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                    mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
+            public void onSlide(View bottomSheet, float slideOffset) {
             }
         });
         return view;
     }
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(Context context) {
         super.onAttach(context);
     }
 
-    /**
-     * Updates the map's UI settings based on whether the user has granted location permission.
-     */
-    private void updateLocationUI() {
-        if (mMap == null) {
-            return;
-        }
-        try {
-            if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true);
-                mMap.getUiSettings().setMyLocationButtonEnabled(true);
-                mMap.getUiSettings().setMapToolbarEnabled(true);
-
-            } else {
-                mMap.setMyLocationEnabled(false);
-                mMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mLastKnownLocation = null;
-                getLocationPermission();
-            }
-        } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
-        }
-    }
-
+    @SuppressLint("PotentialBehaviorOverride")
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
@@ -259,59 +291,52 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         MapStyleOptions mapStyleOptions = MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style);
         map.setMapStyle(mapStyleOptions);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
+        new Thread(() -> {
+            try {
 
-                    for (int i = 0; i < LocalManagement.mValues.size(); i++) {
-                        final int finalI = i;
+                for (int i = 0; i < LocalManagement.mValues.size(); i++) {
+                    final int finalI = i;
 
-                        //Usa glide para descargar la imagen y convertirla en Bitmap (resource) para que pueda sustituir al Maker
-                        //por defecto de Google
-                        Glide.with(context)
-                                .asBitmap()
-                                .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
-                                .into(new CustomTarget<Bitmap>(180, 180) {
-                                    @Override
-                                    public void onResourceReady(@NotNull Bitmap resource, Transition<? super Bitmap> transition) {
-                                        final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
-                                                .title(LocalManagement.mValues.get(finalI).getTitulo())
-                                                .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
-                                        marcador.setTag(finalI);
-                                    }
+                    /** Usa glide para descargar la imagen y convertirla en Bitmap (resource)
+                     para que pueda sustituir al Maker por defecto de Google */
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(LocalManagement.mValues.get(i).getURLIcono()) //Or URLImagen
+                            .into(new CustomTarget<Bitmap>(180, 180) {
+                                @Override
+                                public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                                    final Marker marcador = mMap.addMarker(new MarkerOptions().position(new LatLng(LocalManagement.mValues.get(finalI).getLatitud(), LocalManagement.mValues.get(finalI).getLongitud()))
+                                            .title(LocalManagement.mValues.get(finalI).getTitulo())
+                                            .snippet(LocalManagement.mValues.get(finalI).getDescripcion()).icon(BitmapDescriptorFactory.fromBitmap(resource)));
+                                    marcador.setTag(finalI);
+                                }
 
-                                    @Override
-                                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                                    }
-                                });
-                    }
-
-                } catch (Exception ignored) {
-
+                                @Override
+                                public void onLoadCleared(Drawable placeholder) {
+                                }
+                            });
                 }
+
+            } catch (Exception ignored) {
+
             }
         }).start();
-        //LISTENER
+
+        //Listener de mMap al hacer click.
         mMap.setOnMarkerClickListener(this);
 
-        //MAKE ROUTES
+        //Haer rutas con TaskDirectionRequest se necesitan Origen y Destino.
         //new TaskDirectionRequest().execute(buildRequestUrl(mOrigin, mDestination));
 
-        if (routaNecesitada = true) {
-            LatLng destino = new LatLng(LocalManagement.mValues.get(idDest).getLatitud(), LocalManagement.mValues.get(idDest).getLongitud());
-            hacerRuta(mOrigin, destino);
-            routaNecesitada = false;
-        }
-        // Prompt the user for permission.
+
+        // Pide al usuario permiso.
         getLocationPermission();
 
-        // Turn on the My Location layer and the related control on the map.
+        //Activa la capa de Localidad y control del mapa
         updateLocationUI();
 
-        // Get the current location of the device and set the position of the map.
+        // Obtiene la ubicación del dispositivo y la actualiza en  el mapa.
         getDeviceLocation();
-
 
     }
 
@@ -321,37 +346,66 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         if (marker.getTag() != null) {
             id = (Integer) marker.getTag();
         } else {
-            Log.d("DEBUG", "onMarkerClick: Marker Tag is null l:321");
+            Log.d(TAG, "MapaFragemnt -> onMarkerClick -> Marker Tag is null l:321");
         }
-        convertidor.donwload(getContext(), LocalManagement.mValues.get(id).getURLImagen(), binding.bottomJsoft.ImgMarker);
-        // convertidor.donwload(getApplicationContext(),LocalManagement.mValues.get(id).getURLIcono(),icon);
+
+        clickMarcador = true;
+
+        convertidor.download(getContext(), LocalManagement.mValues.get(id).getURLImagen(), binding.bottomJsoft.ImgMarker);
+        Glide.with(context)
+                .asBitmap()
+                .load(LocalManagement.mValues.get(id).getURLIcono()) //Or URLImagen
+
+                .into(new CustomTarget<Bitmap>(140, 140) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
+                        binding.bottomJsoft.tapActionIconM.setImageBitmap(resource);
+                    }
+
+                    @Override
+                    public void onLoadCleared(Drawable placeholder) {
+                    }
+                });
+
+        //convertidor.download(getContext(),LocalManagement.mValues.get(id).getURLImagen(), binding.bottomJsoft.tapActionIconM);
         binding.bottomJsoft.txtNombreLocal.setText(LocalManagement.mValues.get(id).getTitulo());
+        binding.bottomJsoft.txtNombreLocal.setTextColor(getResources().getColor(R.color.quantum_white_100));
         binding.bottomJsoft.txtDescripcion.setText(LocalManagement.mValues.get(id).getDescripcion());
-        binding.bottomJsoft.txtDireccion.setText(LocalManagement.mValues.get(id).getUltimaFecha());
-        mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
+        binding.bottomJsoft.txtDireccion.setText(LocalManagement.mValues.get(id).getDireccion());
+
+        if (expandido && clickMarcador) {
+            binding.bottomJsoft.MainSheet.setVisibility(View.VISIBLE);
+            binding.bottomJsoft.descSheet.setVisibility(View.VISIBLE);
+            binding.bottomJsoft.dirSheet.setVisibility(View.VISIBLE);
+        } else {
+            binding.bottomJsoft.MainSheet.setVisibility(View.GONE);
+            binding.bottomJsoft.descSheet.setVisibility(View.GONE);
+            binding.bottomJsoft.dirSheet.setVisibility(View.GONE);
+        }
+
+        binding.bottomJsoft.tapActionLayout.setVisibility(View.GONE);
+        binding.bottomJsoft.tapActionLayoutLocal.setVisibility(View.VISIBLE);
+        binding.bottomJsoft.tapActionName.setText(LocalManagement.mValues.get(id).getTitulo());
+
+        mBottomSheetBehavior1.setPeekHeight(340);
+
+        if (LocalManagement.mValues.get(id).isAbierto().equals("si")) {
+            binding.bottomJsoft.tapActionEstado.setText("Abierto");
+            binding.bottomJsoft.tapActionEstado.setTextColor(getResources().getColor(R.color.lightGreen));
+            Log.e(TAG, "onMarkerClick: ABIERTO");
+        } else {
+            binding.bottomJsoft.tapActionEstado.setText("Cerrado");
+            binding.bottomJsoft.tapActionEstado.setTextColor(getResources().getColor(R.color.lightRed));
+            Log.e(TAG, "onMarkerClick: CERRADO");
+
+        }
+        // mBottomSheetBehavior1.setState(BottomSheetBehavior.STATE_EXPANDED);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                 new LatLng(LocalManagement.mValues.get(id).getLatitud(),
                         LocalManagement.mValues.get(id).getLongitud()), 17)); //18 is ZOOM
 
         return false;
-    }
-
-    /**
-     * Handles the result of the request for location permissions.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        mLocationPermissionGranted = false;
-        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                mLocationPermissionGranted = true;
-            }
-        }
-        updateLocationUI();
     }
 
     @Override
@@ -411,16 +465,58 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
         super.onDestroyView();
     }
 
-    public void hacerRuta(LatLng origin, LatLng destination) {
+    /**
+     * Maneja el resultado de solicitar el permiso de Ubicación.
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
+        mLocationPermissionGranted = false;
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {// If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
+            }
+        }
+        updateLocationUI();
+    }
 
+    /**
+     * Actualiza las opciones de ID del mapa basado
+     * si el usuario ha dado permisos o no.
+     */
+    private void updateLocationUI() {
+        if (mMap == null) {
+            return;
+        }
+        try {
+            if (mLocationPermissionGranted) {
+                mMap.setMyLocationEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                mMap.getUiSettings().setMapToolbarEnabled(true);
+
+            } else {
+                mMap.setMyLocationEnabled(false);
+                mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mLastKnownLocation = null;
+                getLocationPermission();
+            }
+        } catch (SecurityException e) {
+            Log.d(TAG, "MapFrg->dException: %s " + e.getMessage());
+        }
+    }
+
+    public void hacerRuta(LatLng origin, LatLng destination) {
         new TaskDirectionRequest().execute(buildRequestUrl(origin, destination));
     }
 
+    //TO-DO Make this a setting for users to choose driving or walking routes.
     public String buildRequestUrl(LatLng origin, LatLng destination) {
         String strOrigin = "origin=" + origin.latitude + "," + origin.longitude;
         String strDestination = "destination=" + destination.latitude + "," + destination.longitude;
         String sensor = "sensor=false";
-        String mode = "mode=driving";
+        String mode = "mode=transit"; //walking, transit,driving,bicycling
 
         String param = strOrigin + "&" + strDestination + "&" + sensor + "&" + mode;
         String output = "json";
@@ -432,12 +528,13 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
     }
 
     /**
-     * Prompts the user for permission to use the device location.
+     * Le pide al usuario permiso para usar la ubicación.
      */
     private void getLocationPermission() {
         /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
+         * Le solicita permiso de ubicación, para poder obtener el lugar donde
+         * se encuentra el dispotivo. El resultado del solicitado de permiso es
+         * manejado por un callback onRequestPermissionsResult
          * onRequestPermissionsResult.
          */
         if (ContextCompat.checkSelfPermission(context,
@@ -453,12 +550,12 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
 
 
     /**
-     * Gets the current location of the device, and positions the map's camera.
+     * Obtiene la ubicación actual del dispositivo y posiciona la camara del mapa.
      */
     private void getDeviceLocation() {
         /*
-         * Get the best and most recent location of the device, which may be null in rare
-         * cases when a location is not available.
+         * Obtiene la mejor y más reciente ubicación del dispositivo of the device,
+         * que puede ser null en casos raros donde la ubicación no está disponible.
          */
         try {
             if (mLocationPermissionGranted) {
@@ -467,16 +564,24 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                     @Override
                     public void onComplete(Task<Location> task) {
                         if (task.isSuccessful()) {
-                            // Set the map's camera position to the current location of the device.
+                            // Pone la posición de camara del mapa a la ubicación actual del dispositivo.
                             mLastKnownLocation = task.getResult();
                             if (mLastKnownLocation != null) {
+                                Log.d(TAG, " MapaFragemnt -> getDeviceLocation() -> onComplete: Succesfully got device location!");
                                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                         new LatLng(mLastKnownLocation.getLatitude(),
                                                 mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                                mOrigin = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+
+                                if (TaskDirectionRequest.routaNecesitada = true) {
+                                    LatLng destino = new LatLng(LocalManagement.mValues.get(idDest).getLatitud(), LocalManagement.mValues.get(idDest).getLongitud());
+                                    hacerRuta(mOrigin, destino);
+                                    TaskDirectionRequest.routaNecesitada = false;
+                                }
                             }
                         } else {
-                            // Log.d(TAG, "Current location is null. Using defaults.");
-                            //Log.e(TAG, "Exception: %s", task.getException());
+                            Log.d(TAG, " MapaFragemnt -> getDeviceLocation() -> onComplete: La ubicación actual es null. Usando defaults.");
+                            Log.e(TAG, " Exception: %s", task.getException());
                             mMap.moveCamera(CameraUpdateFactory
                                     .newLatLngZoom(PEDROANTONIO, DEFAULT_ZOOM));
                             mMap.getUiSettings().setMyLocationButtonEnabled(false);
@@ -485,13 +590,15 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
                 });
             }
         } catch (SecurityException e) {
-            Log.e("Exception: %s", e.getMessage());
+            Log.e(" MapaFragm>Exception:%s", e.getMessage());
         }
     }
 
 
-    //Get JSON data from Google Direction
+    //Obtiene JSON data desde Google Direction
     public static class TaskDirectionRequest extends AsyncTask<String, Void, String> {
+        public static boolean routaNecesitada = true;
+
         @Override
         protected String doInBackground(String... strings) {
             String responseString = "";
@@ -509,63 +616,66 @@ public class MapaFragment extends Fragment implements OnMapReadyCallback, Google
             //Json object parsing
             TaskParseDirection parseResult = new TaskParseDirection();
             parseResult.execute(responseString);
+
         }
-    }
 
-    //Parse JSON Object from Google Direction API & display it on Map
-    public static class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
-        public static final int PATTERN_DASH_LENGTH_PX = 20;
-        public static final int PATTERN_GAP_LENGTH_PX = 10;
-        public final PatternItem DOT = new Dot();
-        public final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
-        public final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
-        public final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(DOT, GAP);
+        //Parsea JSON Object desde Google Direction API & muestralo en el mapa.
+        public static class TaskParseDirection extends AsyncTask<String, Void, List<List<HashMap<String, String>>>> {
+            public static final int PATTERN_DASH_LENGTH_PX = 20;
+            public static final int PATTERN_GAP_LENGTH_PX = 10;
+            public final PatternItem DOT = new Dot();
+            public final PatternItem DASH = new Dash(PATTERN_DASH_LENGTH_PX);
+            public final PatternItem GAP = new Gap(PATTERN_GAP_LENGTH_PX);
+            public final List<PatternItem> PATTERN_POLYGON_ALPHA = Arrays.asList(DOT, GAP);
 
-        @Override
-        protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
-            List<List<HashMap<String, String>>> routes = null;
-            JSONObject jsonObject;
+            @Override
+            protected List<List<HashMap<String, String>>> doInBackground(String... jsonString) {
+                List<List<HashMap<String, String>>> routes = null;
+                JSONObject jsonObject;
 
-            try {
-                jsonObject = new JSONObject(jsonString[0]);
-                DirectionParser parser = new DirectionParser();
-                routes = parser.parse(jsonObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                try {
+                    jsonObject = new JSONObject(jsonString[0]);
+                    DirectionParser parser = new DirectionParser();
+                    routes = parser.parse(jsonObject);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return routes;
             }
-            return routes;
-        }
 
-        @Override
-        protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
+            @Override
+            protected void onPostExecute(List<List<HashMap<String, String>>> lists) {
 
-            super.onPostExecute(lists);
+                super.onPostExecute(lists);
 
-            PolylineOptions polylineOptions = null;
+                PolylineOptions polylineOptions = null;
 
-            for (List<HashMap<String, String>> path : lists) {
-                ArrayList<LatLng> points = new ArrayList<>();
-                polylineOptions = new PolylineOptions();
+                for (List<HashMap<String, String>> path : lists) {
+                    ArrayList<LatLng> points = new ArrayList<>();
+                    polylineOptions = new PolylineOptions();
 
-                for (HashMap<String, String> point : path) {
-                    double lat = Double.parseDouble(point.get("lat"));
-                    double lon = Double.parseDouble(point.get("lng"));
+                    for (HashMap<String, String> point : path) {
+                        double lat = Double.parseDouble(point.get("lat"));
+                        double lon = Double.parseDouble(point.get("lng"));
 
-                    points.add(new LatLng(lat, lon));
+                        points.add(new LatLng(lat, lon));
+
+                    }
+                    polylineOptions.addAll(points);
+                    polylineOptions.width(14f);
+                    polylineOptions.color(Color.argb(240, 100, 0, 0));
+                    polylineOptions.geodesic(true);
+                    polylineOptions.pattern(PATTERN_POLYGON_ALPHA);
 
                 }
-                polylineOptions.addAll(points);
-                polylineOptions.width(14f);
-                polylineOptions.color(Color.argb(240, 100, 0, 0));
-                polylineOptions.geodesic(true);
-                polylineOptions.pattern(PATTERN_POLYGON_ALPHA);
-
+                if (polylineOptions != null) {
+                    mMap.addPolyline(polylineOptions);
+                } else {
+                    //Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
+                    Log.e("DEBUG", "MapaFragment -> onPostExecute: -> polylineOptions es null");
+                }
             }
-            if (polylineOptions != null) {
-                mMap.addPolyline(polylineOptions);
-            }  //Toast.makeText(getContext(), "Direction not found", Toast.LENGTH_LONG).show();
-
         }
-    }
 
+    }
 }

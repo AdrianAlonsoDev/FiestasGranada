@@ -1,13 +1,16 @@
 package es.fiestasgranada.main.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.transition.Slide;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -16,75 +19,82 @@ import es.fiestasgranada.main.databinding.ActivityHomeBinding;
 import es.fiestasgranada.main.fragments.CuentaFragment;
 import es.fiestasgranada.main.fragments.LocalFragment;
 import es.fiestasgranada.main.fragments.MapaFragment;
-import es.fiestasgranada.main.listeners.LocalListener;
-import es.fiestasgranada.main.local.Local;
 
-
-public class HomeActivity extends AppCompatActivity implements LocalListener {
+public class HomeActivity extends AppCompatActivity {
 
     FragmentTransaction transaccion;
     Fragment fragmentHome, fragmentCuenta, fragmentMapa;
+    String TAG = "DEBUG";
+    String TAGLOC = " HomeActivity";
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        es.fiestasgranada.main.databinding.ActivityHomeBinding binding = ActivityHomeBinding.inflate(getLayoutInflater());
+
+        getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+
+        ActivityHomeBinding binding = ActivityHomeBinding.inflate(getLayoutInflater());
+
         View view = binding.getRoot();
         setContentView(view);
+
+        Slide slide = new Slide();
+        slide.setSlideEdge(Gravity.LEFT);
 
         fragmentHome = new LocalFragment();
         fragmentCuenta = new CuentaFragment();
         fragmentMapa = new MapaFragment();
 
-        //Inicia el fragment
-        getSupportFragmentManager().beginTransaction().add(R.id.cuentaFragment, new LocalFragment()).commit(); //Para poner tipo grid, usar LocalFragment().newInstance(2);.commit();
+        LocalFragment lf = new LocalFragment();
+        LocalFragment.listado.clear();
+        LocalFragment.DownloadTaskAsync();
 
-        //Initialize and Assign Variable
+        Log.d(TAG + TAGLOC, " -> onCreate -> lf.DownloadTaskAsync(): l:43");
+
+        /**Inicia el fragment
+         *
+         * Para poner tipo grid, usar LocalFragment().newInstance(2);.commit();
+         *
+         * */
+        getSupportFragmentManager().beginTransaction().add(R.id.cuentaFragment, new LocalFragment()).commit();
+
+        Log.d(TAG + TAGLOC, " -> onCreate -> Iniciando fragment l:47");
+
+        //Inicializa y asigna la variable
         BottomNavigationView bottomNavigationView = binding.bottomNav;
 
-        //Perform ItemSelectedListener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        //Realiza el -> ItemSelectedListener
+        bottomNavigationView.setOnNavigationItemSelectedListener(menuItem -> {
 
-                transaccion = getSupportFragmentManager().beginTransaction();
-                int itemId = menuItem.getItemId();
+            transaccion = getSupportFragmentManager().beginTransaction();
+            int itemId = menuItem.getItemId();
 
-                boolean returnBool = false;
-                if (itemId == R.id.mapa) {
-                    //startActivity(new Intent(getApplicationContext(), MapaActivity.class));
-                    transaccion.replace(R.id.cuentaFragment, new MapaFragment()).commit();
-                    overridePendingTransition(0, 0);
-                    returnBool = true;
-                } else if (itemId == R.id.cuenta) {
-                    //startActivity(new Intent(getApplicationContext(), CuentaActivity.class));
-                    //Llamar a fragment
-                    transaccion.replace(R.id.cuentaFragment, new CuentaFragment()).commit();
+            boolean returnBool = false;
 
-                    // bottomNavigationView.setSelectedItemId(R.id.cuenta);
-                    overridePendingTransition(0, 0);
-                    returnBool = true;
-                } else if (itemId == R.id.home) {
-                    transaccion.replace(R.id.cuentaFragment, new LocalFragment()).commit();
-                    // bottomNavigationView.setSelectedItemId(R.id.home);
-                    overridePendingTransition(0, 0);
-                    returnBool = true;
-                }
-                return returnBool;
+            if (itemId == R.id.mapa) {
+
+                //Llamar a fragment
+                overridePendingTransition(0, 0);
+                transaccion.replace(R.id.cuentaFragment, new MapaFragment()).commit();
+                returnBool = true;
+
+            } else if (itemId == R.id.cuenta) {
+
+                overridePendingTransition(0, 0);
+                transaccion.replace(R.id.cuentaFragment, new CuentaFragment()).commit();
+
+                returnBool = true;
+
+            } else if (itemId == R.id.home) {
+
+                overridePendingTransition(0, 0);
+                transaccion.replace(R.id.cuentaFragment, new LocalFragment()).commit();
+
+                returnBool = true;
             }
+            return returnBool;
         });
-
-    }
-
-
-    //metodos de la interfaz para que todo funcione
-    @Override
-    public void onListFragmentInteraction(Local evento) {
-
-    }
-
-    @Override
-    public void onClickLocal(Local evento) {
 
     }
 

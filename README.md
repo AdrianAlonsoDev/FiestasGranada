@@ -1,11 +1,10 @@
 <p align="center">
   <img src="https://i.imgur.com/GkKWDtk.png" alt="Logo" width="150" height="150" />
 </p>
-<h1 align="center">➤ FiestasGranada</h1>
+<h1 align="center">-= FiestasGranada  =-</h1>
 <h4 align="center">branch: master</h4>
 <br>
 
-</p>
 <p align="center">
   <b>Descripción de la aplicación.</b>
 	
@@ -33,7 +32,7 @@
       </li>
     </ul>
   </ul>
-<ul>
+
 
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)](#contributors)
@@ -41,19 +40,31 @@
 <p align="center">
 	
 [![CircleCI](https://circleci.com/gh/AdrianArtimez/FiestasGranada.svg?style=shield&circle-token=c4addf0b000df92e4673daed8203d198db94a0d3)](https://app.circleci.com/pipelines/github/AdrianArtimez/FiestasGranada/11/workflows/10867527-287f-4cbc-b4a9-04013a970457/jobs/15)
-![Shield](https://img.shields.io/endpoint?color=red&label=Version&url=https://pastebin.com/raw/UZujY2Nu)  
+![Shield](https://img.shields.io/endpoint?color=red&label=Version&url=https://pastebin.com/raw/LQQ40zTy)  
 [![CodeFactor](https://www.codefactor.io/Content/badges/A.svg)](https://www.codefactor.io/)
 
 
 </p>
 <p align="center">
   <b>Repositorio de la aplicación movil Fiestas Granada.</b></br>
-  <sub>Este readme es principalmente informativo para documentar el progreso y actualizar la lista to-do.<sub>
-<sub>
+  <sub>Este readme es principalmente informativo para documentar el progreso y actualizar la lista to-do.</sub>
 </p>
 
-<br />
+<br/>
 
+[![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)](#contributors)
+
+## ➤ Versiones
+
+<h3> Versión actual: 0.0.35</h3>
+<h5> Versión pasada: 0.0.20</h5>
+	
+   Versiones | Fecha de introducción | Commit
+   --------- | --------------------- | ---------
+   v0.0.35 (Actual) | <p align="center">06/12/2020</p> | [Último commit](https://github.com/FiestasGranada/Fiestas-Granada/commits/master)
+   v0.0.20 | <p align="center">23/11/2020</p> | [Commit 2fc795b...](https://github.com/FiestasGranada/Fiestas-Granada/commit/2fc795bbc8d0ee68e01878d5499638410fdcc5ac)
+   v0.0.10 | <p align="center">23/11/2020</p> | [Commit 2aceaba...](https://github.com/FiestasGranada/Fiestas-Granada/commit/2aceabaa22a89b4dc1ef7434aa4436fc690d3c6d)
+   v0.0.01 | <p align="center">16/03/2020</p> | [Commit 97bd55e...](https://github.com/FiestasGranada/Fiestas-Granada/commit/97bd55e7d3929c661a513e6c8f3575a3d7680652)
 
 [![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/aqua.png)](#contributors)
 

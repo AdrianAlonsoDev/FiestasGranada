@@ -4,8 +4,7 @@
     <item
         android:id="@+id/home"
 
-        android:icon="@drawable/ic_bar_on"
-        android:state_selected="true"
+        android:icon="@drawable/ic_sel_bar"
         android:title="Menu" />
     <item
         android:id="@+id/mapa"

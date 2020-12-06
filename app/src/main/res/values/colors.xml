@@ -3,8 +3,15 @@
     <color name="colorPrimary">#BE9C27B0</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#ffffff</color>
-    <color name="colorGrey">#1b1e2f</color>
+    <color name="colorBlueDefault">#1b1e2f</color>
+    <color name="colorBlueMenu">#F2242842</color>
     <color name="colorLightBlue">#4381ff</color>
     <color name="colorIntenseBlue">#41B1FB</color>
+    <color name="duskYellow">#F1B606</color>
+    <color name="lightGrey">#7A7A7A</color>
+    <color name="lightGreen">#01AC08</color>
+    <color name="lightRed">#A80000</color>
+    <color name="transp">#00FFFFFF</color>
+
 
 </resources>

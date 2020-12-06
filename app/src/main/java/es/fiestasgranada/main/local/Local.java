@@ -1,27 +1,27 @@
 package es.fiestasgranada.main.local;
 
-public class Local {
+import android.widget.RatingBar;
+
+public abstract class Local {
 
 
-    //---------ATRIBUTOS------------------------
+    //Atributos
+    public int uid;
+    public String titulo;
+    public String descripcion;
+    public String ultimaFecha;
+    public double latitud;
+    public double longitud;
+    public String URLImagen;
+    public String URLIcono;
+    public String abierto;
+    public String direccion;
+    public String horario;
 
-    private int id;
-    private String titulo;
-    private String descripcion;
-    private String ultimaFecha;
-    private double latitud;
-    private double longitud;
-    private String URLImagen;
-    private String URLIcono;
-    private String abierto;
-    private String direccion;
-    private String horario;
 
-
-    //constructores
-
-    public Local(int id, String titulo, String descripcion, String ultimaFecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, String direccion, String horario) {
-        this.id = id;
+    //Constructores
+    public Local(int uid, String titulo, String descripcion, String ultimaFecha, String URLImagen, String URLIcono, double latitud, double longitud, String abierto, String direccion, String horario) {
+        this.uid = uid;
         this.titulo = titulo;
         this.descripcion = descripcion;
         this.ultimaFecha = ultimaFecha;
@@ -32,10 +32,13 @@ public class Local {
         this.abierto = abierto;
         this.direccion = direccion;
         this.horario = horario;
+    }
+
+    public Local() {
 
     }
 
-    //setters y getters
+    //Setters y Getters
 
     public String getURLImagen() {
         return URLImagen;
@@ -103,11 +106,11 @@ public class Local {
     }
 
     public int getId() {
-        return id;
+        return uid;
     }
 
     public void setId(int id) {
-        this.id = id;
+        this.uid = uid;
     }
 
     public String getHorario() {
@@ -125,4 +128,6 @@ public class Local {
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
+
+    public abstract RatingBar getRating();
 }

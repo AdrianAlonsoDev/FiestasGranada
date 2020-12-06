@@ -1,7 +1,4 @@
 <resources>
-    <string name="app_name">Fiestas Granada</string>
-    <string name="title_activity_mapas">Map</string>
-    <string name="google_maps_key">AIzaSyDGtuzFcDRjvnsI0Q9DabGXuNhU2I8d1e4</string>
-    <string name="title_activity_mapa_generado">Map</string>
+    <string name="app_name" translatable="false">Fiestas Granada</string>
 
 </resources>
